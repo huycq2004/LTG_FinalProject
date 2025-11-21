@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 3
+  tags:
+  - Enemy
+  - Ground
+  - Shop
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - Ground
+  - Water
+  - UI
+  - Enemy
+  - Player
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 3826602133
+    locked: 0
+  - name: Shop
+    uniqueID: 2727487431
+    locked: 0
+  - name: Ground_1
+    uniqueID: 1623339907
+    locked: 0
+  - name: Ground_2
+    uniqueID: 1306773897
+    locked: 0
+  - name: Enemie
+    uniqueID: 2079389923
+    locked: 0
+  - name: Player
+    uniqueID: 1327616979
+    locked: 0
+  - name: Healthbar
+    uniqueID: 3620706287
+    locked: 0
+  - name: Coin_panel
+    uniqueID: 3635519627
+    locked: 0
+  - name: Shop_panel
+    uniqueID: 3597605679
+    locked: 0
+  m_RenderingLayers:
+  - Default
