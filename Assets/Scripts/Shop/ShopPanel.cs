@@ -61,7 +61,7 @@ public class ShopPanel : MonoBehaviour
 
             if (i < itemPriceTexts.Length && itemPriceTexts[i] != null && i < shopItems.Length && shopItems[i] != null)
             {
-                itemPriceTexts[i].text = shopItems[i].price + " Gold";
+                itemPriceTexts[i].text = shopItems[i].price.ToString();
             }
         }
     }

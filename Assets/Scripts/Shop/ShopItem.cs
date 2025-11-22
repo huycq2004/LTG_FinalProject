@@ -6,7 +6,6 @@ public class ShopItem
     public string itemName;          // Ten item
     public string description;       // Mo ta item
     public int price;                // Gia item
-    public Sprite icon;              // Icon item (optional)
     public ItemType itemType;        // Loai item
     public int value;                // Gia tri item (vd: +2 mau, +10 damage)
 }
