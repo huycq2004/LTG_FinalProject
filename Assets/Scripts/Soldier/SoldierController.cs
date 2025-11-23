@@ -464,6 +464,12 @@ public class SoldierController : MonoBehaviour
             {
                 orcController.TakeDamage(attackDamage);
             }
+
+            GolemController golemController = hitEnemy.GetComponent<GolemController>();
+            if (golemController != null)
+            {
+                golemController.TakeDamage(attackDamage);
+            }
         }
     }
 
