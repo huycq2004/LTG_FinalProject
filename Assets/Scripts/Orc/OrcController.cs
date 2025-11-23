@@ -19,6 +19,11 @@ public class OrcController : MonoBehaviour
     public float attackRadius = 0.8f;
     public int attackDamage = 1;
 
+    [Header("Drop Settings")]
+    public GameObject goldCoinPrefab;  // Prefab coin vang
+    public int goldDropAmount = 1;     // So luong coin roi khi chet
+    public float dropForce = 5f;       // Luc roi cua coin
+
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private Animator animator;
@@ -281,8 +286,42 @@ public class OrcController : MonoBehaviour
         if (animator != null)
             animator.SetBool("isDeath", true);
 
+        // Rơi vàng khi chết
+        DropGold();
+
         // Xoá GameObject sau 0.5 giây để có thể hiển thị animation chết
         Destroy(gameObject, 0.5f);
+    }
+
+    void DropGold()
+    {
+        // Kiểm tra có prefab coin không
+        if (goldCoinPrefab == null)
+        {
+            Debug.LogWarning("Gold Coin Prefab chưa được gán!");
+            return;
+        }
+
+        // Tạo số lượng coin rơi
+        for (int i = 0; i < goldDropAmount; i++)
+        {
+            // Tạo coin tại vị trí quái chết
+            GameObject coin = Instantiate(goldCoinPrefab, transform.position, Quaternion.identity);
+            
+            // Lấy Rigidbody2D của coin để thêm lực rơi
+            Rigidbody2D coinRB = coin.GetComponent<Rigidbody2D>();
+            if (coinRB != null)
+            {
+                // Tạo hướng rơi ngẫu nhiên (trái hoặc phải)
+                float randomX = Random.Range(-1f, 1f);
+                Vector2 dropDirection = new Vector2(randomX, 1f).normalized;
+                
+                // Áp dụng lực rơi
+                coinRB.linearVelocity = dropDirection * dropForce;
+            }
+            
+            Debug.Log("Rơi 1 coin vàng!");
+        }
     }
 
     void UpdateAnimation()

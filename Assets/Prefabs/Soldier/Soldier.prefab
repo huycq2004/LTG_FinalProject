@@ -178,7 +178,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0
   m_GravityScale: 3
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 325e1bce1aba22d4ebf105e6b65c53bd, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -211,9 +211,11 @@ MonoBehaviour:
   attackDamage: 5
   maxHealth: 5
   healthBarUI: {fileID: 0}
+  shopPanel: {fileID: 0}
   knockbackForce: 10
   knockbackDuration: 0.1
   hurtDuration: 0.5
   invincibilityDuration: 0.5
   groundTag: Ground
   enemyTag: Enemy
+  trapTag: Trap

@@ -7,6 +7,7 @@ TagManager:
   - Enemy
   - Ground
   - Shop
+  - Trap
   layers:
   - Default
   - TransparentFX
@@ -70,6 +71,9 @@ TagManager:
     locked: 0
   - name: Shop_panel
     uniqueID: 3597605679
+    locked: 0
+  - name: Coins
+    uniqueID: 1925143765
     locked: 0
   m_RenderingLayers:
   - Default

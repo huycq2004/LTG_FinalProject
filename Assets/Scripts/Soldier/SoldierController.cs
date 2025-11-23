@@ -33,6 +33,7 @@ public class SoldierController : MonoBehaviour
     [Header("Ground Settings")]
     public string groundTag = "Ground";
     public string enemyTag = "Enemy";
+    public string trapTag = "Trap";  // Tag cua Trap
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -333,7 +334,6 @@ public class SoldierController : MonoBehaviour
         if (isDeath) return;
 
         maxHealth += amount;
-        currentHealth += amount;  // Cung tang mau hien tai
         
         Debug.Log("Tang mau toi da: +" + amount + " | Mau toi da moi: " + maxHealth);
 
@@ -369,6 +369,27 @@ public class SoldierController : MonoBehaviour
         {
             CurrencyManager.Instance.AddGold(amount);
         }
+    }
+
+    // Getter methods de lay thong tin chi so (dung cho UI)
+    public int GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public int GetMaxHealth()
+    {
+        return maxHealth;
+    }
+
+    public int GetAttackDamage()
+    {
+        return attackDamage;
+    }
+
+    public float GetMoveSpeed()
+    {
+        return moveSpeed;
     }
 
     void EnablePhaseThrough()
@@ -453,5 +474,21 @@ public class SoldierController : MonoBehaviour
             isGrounded = true;
             jumpCount = 0;
         }
+
+        // Neu va cham voi Trap thi chet ngay
+        if (collision.gameObject.CompareTag(trapTag))
+        {
+            Debug.Log("Soldier cham vao Trap!");
+            Die();
+        }
+    }
+
+
+
+    void OnDrawGizmosSelected()
+    {
+        // Vẽ phạm vi tấn công
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRadius);
     }
 }

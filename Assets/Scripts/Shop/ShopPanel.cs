@@ -16,12 +16,16 @@ public class ShopPanel : MonoBehaviour
     public Text[] itemNameTexts;     // Ten item (Legacy UI)
     public Text[] itemPriceTexts;    // Gia item (Legacy UI)
 
+    [Header("Stats Display")]
+    public Text statsDisplayText;    // Hien thi chi so nhan vat (Health, Damage, Speed)
+
     [Header("Animation Settings")]
     public float fadeSpeed = 10f;    // Toc do fade in/out
 
     private bool isOpen = false;
     private bool isAnimating = false;
     private float targetAlpha;
+    private SoldierController soldierController;
 
     void Start()
     {
@@ -36,6 +40,9 @@ public class ShopPanel : MonoBehaviour
         // Gan su kien cho nut dong
         if (closeButton != null)
             closeButton.onClick.AddListener(Close);
+
+        // Tim SoldierController de lay thong tin chi so
+        soldierController = GameObject.FindGameObjectWithTag("Player")?.GetComponent<SoldierController>();
 
         // Khoi tao cac nut mua item
         SetupItemButtons();
@@ -90,6 +97,12 @@ public class ShopPanel : MonoBehaviour
 
         // Cap nhat hien thi vang
         UpdateGoldDisplay();
+        
+        // Cap nhat hien thi chi so nhan vat khi shop mo
+        if (isOpen)
+        {
+            UpdateStatsDisplay();
+        }
     }
 
     void UpdateGoldDisplay()
@@ -98,6 +111,22 @@ public class ShopPanel : MonoBehaviour
         {
             goldDisplayText.text = CurrencyManager.Instance.GetGold().ToString();
         }
+    }
+
+    void UpdateStatsDisplay()
+    {
+        if (statsDisplayText == null || soldierController == null)
+            return;
+
+        string statsText = string.Format(
+            "Máu: {0}/{1}\nSát Thương: {2}\nTốc Độ: {3:F1}",
+            soldierController.GetCurrentHealth(),
+            soldierController.GetMaxHealth(),
+            soldierController.GetAttackDamage(),
+            soldierController.GetMoveSpeed()
+        );
+
+        statsDisplayText.text = statsText;
     }
 
     public void Open()
@@ -127,6 +156,12 @@ public class ShopPanel : MonoBehaviour
         isOpen = false;
         isAnimating = true;
         targetAlpha = 0;
+        
+        // Tat hien thi chi so khi dong shop
+        if (statsDisplayText != null)
+        {
+            statsDisplayText.text = "";
+        }
         
         Debug.Log("Shop dong!");
     }
