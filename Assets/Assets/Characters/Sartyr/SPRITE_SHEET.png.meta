@@ -1188,10 +1188,10 @@ TextureImporter:
       name: SPRITE_SHEET_38
       rect:
         serializedVersion: 2
-        x: 35
-        y: 132
-        width: 23
-        height: 17
+        x: 36
+        y: 133
+        width: 21
+        height: 19
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1210,10 +1210,10 @@ TextureImporter:
       name: SPRITE_SHEET_39
       rect:
         serializedVersion: 2
-        x: 66
-        y: 138
-        width: 13
-        height: 10
+        x: 68
+        y: 132
+        width: 23
+        height: 22
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1232,10 +1232,10 @@ TextureImporter:
       name: SPRITE_SHEET_40
       rect:
         serializedVersion: 2
-        x: 76
-        y: 132
-        width: 14
-        height: 19
+        x: 227
+        y: 133
+        width: 25
+        height: 21
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1254,10 +1254,10 @@ TextureImporter:
       name: SPRITE_SHEET_41
       rect:
         serializedVersion: 2
-        x: 98
-        y: 137
-        width: 13
-        height: 10
+        x: 258
+        y: 133
+        width: 28
+        height: 21
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1276,10 +1276,10 @@ TextureImporter:
       name: SPRITE_SHEET_42
       rect:
         serializedVersion: 2
-        x: 108
-        y: 132
-        width: 14
-        height: 13
+        x: 290
+        y: 133
+        width: 28
+        height: 21
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1298,10 +1298,10 @@ TextureImporter:
       name: SPRITE_SHEET_43
       rect:
         serializedVersion: 2
-        x: 110
-        y: 139
-        width: 9
-        height: 16
+        x: 98
+        y: 132
+        width: 24
+        height: 23
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1317,57 +1317,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SPRITE_SHEET_44
-      rect:
-        serializedVersion: 2
-        x: 131
-        y: 133
-        width: 9
-        height: 12
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 70c6914dd34236b40800000000000000
-      internalID: 5432225423508990983
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SPRITE_SHEET_45
-      rect:
-        serializedVersion: 2
-        x: 139
-        y: 143
-        width: 15
-        height: 12
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: bce7f1780a08cd3c0800000000000000
-      internalID: -4333447314487148853
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: SPRITE_SHEET_46
       rect:
         serializedVersion: 2
-        x: 139
+        x: 131
         y: 132
-        width: 15
-        height: 12
+        width: 23
+        height: 22
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1383,35 +1339,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SPRITE_SHEET_47
-      rect:
-        serializedVersion: 2
-        x: 162
-        y: 132
-        width: 10
-        height: 10
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: fa77cad9ceb000ba0800000000000000
-      internalID: -6124882382338361425
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: SPRITE_SHEET_48
       rect:
         serializedVersion: 2
-        x: 171
-        y: 141
-        width: 15
-        height: 13
+        x: 163
+        y: 132
+        width: 23
+        height: 22
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1444,94 +1378,6 @@ TextureImporter:
       bones: []
       spriteID: e17913a71756c4940800000000000000
       internalID: 5281708001054529310
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SPRITE_SHEET_50
-      rect:
-        serializedVersion: 2
-        x: 234
-        y: 132
-        width: 83
-        height: 21
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 35b2a1e528505df70800000000000000
-      internalID: 9211274670338878291
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SPRITE_SHEET_51
-      rect:
-        serializedVersion: 2
-        x: 171
-        y: 132
-        width: 16
-        height: 8
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 67b33ded258387050800000000000000
-      internalID: 5798446448816372598
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SPRITE_SHEET_52
-      rect:
-        serializedVersion: 2
-        x: 203
-        y: 132
-        width: 16
-        height: 8
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d68852a19d5242720800000000000000
-      internalID: 2820420881017571437
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SPRITE_SHEET_53
-      rect:
-        serializedVersion: 2
-        x: 226
-        y: 132
-        width: 10
-        height: 6
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 52ca58c0f925d0a00800000000000000
-      internalID: 724325958139882533
       vertices: []
       indices: 
       edges: []

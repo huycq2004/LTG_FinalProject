@@ -1,46 +1,62 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
+/// Soldier Controller - Dieu khien nhan vat nguoi choi
+/// Gom co: Di chuyen, Nhay, Dash, Tan cong, Nhan sat thuong
 public class SoldierController : MonoBehaviour
 {
-    [Header("Movement Settings")]
+    // ====================
+    // CAI DAT CO BAN
+    // ====================
+
+    [Header("Di Chuyen")]
     public float moveSpeed = 8f;
     public float jumpForce = 16f;
     public float dashForce = 20f;
     public float dashDuration = 0.2f;
     public float dashCooldown = 1f;
 
-    [Header("Attack Settings")]
+    [Header("Tan Cong")]
     public float attackDuration = 0.3f;
     public float attackRadius = 0.5f;
     public int attackDamage = 1;
 
-    [Header("Health Settings")]
+    [Header("Mau")]
     public int maxHealth = 5;
-    public HealthBarUI healthBarUI;  // Reference đến UI thanh máu
+    public HealthBarUI healthBarUI;
 
-    [Header("Shop Settings")]
-    public ShopPanel shopPanel;  // Reference đến ShopPanel
+    [Header("Shop")]
+    public ShopPanel shopPanel;
 
-    [Header("Knockback Settings")]
+    [Header("Knockback")]
     public float knockbackForce = 15f;
     public float knockbackDuration = 0.15f;
     public float hurtDuration = 0.2f;
 
-    [Header("Invincibility Settings")]
-    public float invincibilityDuration = 0.5f;
+    [Header("Bat Tu (Invincibility)")]
+    public float invincibilityDuration = 0.5f;       // Bat tu sau khi bi danh
+    public float dashInvincibilityDuration = 0.3f;   // Bat tu khi dash
+    public float jumpInvincibilityDuration = 0.4f;   // Bat tu khi nhay
 
-    [Header("Ground Settings")]
+    [Header("Tag")]
     public string groundTag = "Ground";
     public string enemyTag = "Enemy";
-    public string trapTag = "Trap";  // Tag cua Trap
+    public string trapTag = "Trap";
+
+    // ====================
+    // THANH PHAN
+    // ====================
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private Animator animator;
     private Collider2D soldierCollider;
 
-    // Các trạng thái
+    // ====================
+    // TRANG THAI
+    // ====================
+
     private bool isDashing;
     private bool isAttacking;
     private bool isJumping;
@@ -50,7 +66,10 @@ public class SoldierController : MonoBehaviour
     private bool isInvincible;
     private bool isDeath;
 
-    // Bộ đếm thời gian
+    // ====================
+    // BO DEM THOI GIAN
+    // ====================
+
     private float dashTimeLeft;
     private float dashCooldownTimer;
     private float attackTimer;
@@ -58,140 +77,322 @@ public class SoldierController : MonoBehaviour
     private float hurtTimer;
     private float invincibilityTimer;
 
+    // ====================
+    // BIEN KHAC
+    // ====================
+
     private Vector2 moveInput;
     private int attackIndex;
     private int jumpCount;
     private bool hasDealtDamageThisAttack;
-
-    // Máu
     private int currentHealth;
-
-    // Luu toc do goc de tinh toan upgrade
     private float baseSpeed;
-    
+
+    // ====================
+    // KHOI TAO
+    // ====================
+
     void Start()
+    {
+        GetComponents();
+        InitializeStats();
+        UpdateHealthUI();
+    }
+
+    void GetComponents()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         soldierCollider = GetComponent<Collider2D>();
+    }
 
-        // Khởi tạo máu
+    void InitializeStats()
+    {
         currentHealth = maxHealth;
-
-        // Luu toc do goc
         baseSpeed = moveSpeed;
+    }
 
-        // Cập nhật UI thanh máu ban đầu
+    void UpdateHealthUI()
+    {
         if (healthBarUI != null)
         {
             healthBarUI.ResetHealthBar(maxHealth);
         }
     }
 
+    // ====================
+    // CAP NHAT CHINH
+    // ====================
+
     void Update()
     {
-        // Nếu chết thì không làm gì
-        if (isDeath) return;
+        if (IsDead()) return;
 
-        // Xử lý input
         HandleInput();
-        
-        // Cập nhật các bộ đếm thời gian
-        UpdateTimers();
-        
-        // Xoay sprite theo hướng di chuyển
-        if (moveInput.x > 0) sr.flipX = false;
-        else if (moveInput.x < 0) sr.flipX = true;
-
-        // Cập nhật animation
-        UpdateAnimation();
+        UpdateAllTimers();
+        UpdateFacingDirection();
+        UpdateAnimations();
     }
 
     void FixedUpdate()
     {
-        // Nếu chết thì không di chuyển
-        if (isDeath) return;
+        if (IsDead()) return;
 
-        // Nếu không đang dash hoặc knockback thì di chuyển bình thường
-        if (!isDashing && !isInKnockback)
-            rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
+        ApplyMovement();
     }
+
+    // ====================
+    // KIEM TRA TRANG THAI
+    // ====================
+
+    bool IsDead()
+    {
+        return isDeath;
+    }
+
+    bool IsShopOpen()
+    {
+        return shopPanel != null && shopPanel.IsOpen();
+    }
+
+    bool CanMove()
+    {
+        return !isDashing && !isInKnockback;
+    }
+
+    bool CanJump()
+    {
+        return isGrounded || jumpCount < 2;
+    }
+
+    bool CanDash()
+    {
+        return !isDashing && dashCooldownTimer <= 0;
+    }
+
+    bool CanAttack()
+    {
+        return !isAttacking;
+    }
+
+    // ====================
+    // XU LY INPUT
+    // ====================
 
     void HandleInput()
     {
-        // Nếu shop đang mở thì không xử lý input di chuyển/tấn công
-        if (shopPanel != null && shopPanel.IsOpen())
+        if (IsShopOpen())
         {
             moveInput = Vector2.zero;
             return;
         }
 
-        // Đọc input di chuyển từ bàn phím A/D
-        moveInput = Vector2.zero;
-        if (Keyboard.current.aKey.isPressed) moveInput.x = -1;  // A = di chuyển trái
-        else if (Keyboard.current.dKey.isPressed) moveInput.x = 1;  // D = di chuyển phải
-
-        // NHẢY - G key (có thể nhảy 2 lần - double jump)
-        if (Keyboard.current.gKey.wasPressedThisFrame && (isGrounded || jumpCount < 2))
-        {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            jumpCount++;
-            isGrounded = false;
-            isJumping = true;
-            // Bất khả xâm phạm khi nhảy - không bị đánh trong lúc nhảy
-            isInvincible = true;
-            invincibilityTimer = invincibilityDuration;
-            EnablePhaseThrough();  // Xuyên qua Enemy khi nhảy
-        }
-
-        // TẤN CÔNG - F key
-        if (Keyboard.current.fKey.wasPressedThisFrame && !isAttacking)
-            StartAttack();
-
-        // DASH - H key (có cooldown và không thể dash khi đang dash)
-        if (Keyboard.current.hKey.wasPressedThisFrame && !isDashing && dashCooldownTimer <= 0)
-            StartDash();
+        ReadMovementInput();
+        HandleJumpInput();
+        HandleAttackInput();
+        HandleDashInput();
     }
 
-    void UpdateTimers()
+    void ReadMovementInput()
     {
-        // Giảm cooldown dash - khi hết cooldown có thể dash lại
+        moveInput = Vector2.zero;
+        if (Keyboard.current.aKey.isPressed) moveInput.x = -1;
+        else if (Keyboard.current.dKey.isPressed) moveInput.x = 1;
+    }
+
+    void HandleJumpInput()
+    {
+        if (Keyboard.current.gKey.wasPressedThisFrame && CanJump())
+        {
+            Jump();
+        }
+    }
+
+    void HandleAttackInput()
+    {
+        if (Keyboard.current.fKey.wasPressedThisFrame && CanAttack())
+        {
+            StartAttack();
+        }
+    }
+
+    void HandleDashInput()
+    {
+        if (Keyboard.current.hKey.wasPressedThisFrame && CanDash())
+        {
+            StartDash();
+        }
+    }
+
+    // ====================
+    // HANH DONG: NHAY
+    // ====================
+
+    void Jump()
+    {
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        jumpCount++;
+        isGrounded = false;
+        isJumping = true;
+
+        // BAT TU KHI NHAY
+        EnableInvincibility(jumpInvincibilityDuration);
+        EnablePhaseThrough();
+
+        Debug.Log("Player nhay! Bat tu trong " + jumpInvincibilityDuration + " giay");
+    }
+
+    // ====================
+    // HANH DONG: DASH
+    // ====================
+
+    void StartDash()
+    {
+        isDashing = true;
+        dashTimeLeft = dashDuration;
+        dashCooldownTimer = dashCooldown;
+
+        float dashDirection = sr.flipX ? -1 : 1;
+        rb.linearVelocity = new Vector2(dashDirection * dashForce, 0);
+        rb.gravityScale = 0;
+
+        // BAT TU KHI DASH
+        EnableInvincibility(dashInvincibilityDuration);
+        EnablePhaseThrough();
+
+        Debug.Log("Player dash! Bat tu trong " + dashInvincibilityDuration + " giay");
+    }
+
+    void StopDash()
+    {
+        isDashing = false;
+        rb.gravityScale = 3;
+        DisablePhaseThrough();
+    }
+
+    // ====================
+    // HANH DONG: TAN CONG
+    // ====================
+
+    void StartAttack()
+    {
+        isAttacking = true;
+        attackTimer = attackDuration;
+
+        attackIndex = (attackIndex + 1) % 2;
+        animator.SetInteger("attackIndex", attackIndex);
+        animator.SetBool("isAttacking", true);
+
+        hasDealtDamageThisAttack = false;
+    }
+
+    void ExecuteAttackDamage()
+    {
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(
+            transform.position,
+            attackRadius,
+            LayerMask.GetMask("Enemy")
+        );
+
+        foreach (Collider2D hitEnemy in hitEnemies)
+        {
+            DamageEnemy(hitEnemy);
+        }
+    }
+
+    void DamageEnemy(Collider2D enemyCollider)
+    {
+        Debug.Log("Player danh trung: " + enemyCollider.name);
+
+        // Thu danh Boss
+        BossController boss = enemyCollider.GetComponent<BossController>();
+        if (boss != null)
+        {
+            boss.TakeDamage(attackDamage);
+            return;
+        }
+
+        // Thu danh Orc
+        OrcController orc = enemyCollider.GetComponent<OrcController>();
+        if (orc != null)
+        {
+            orc.TakeDamage(attackDamage);
+            return;
+        }
+
+        // Thu danh Golem
+        GolemController golem = enemyCollider.GetComponent<GolemController>();
+        if (golem != null)
+        {
+            golem.TakeDamage(attackDamage);
+            return;
+        }
+    }
+
+    // ====================
+    // BAT TU (INVINCIBILITY)
+    // ====================
+
+    void EnableInvincibility(float duration)
+    {
+        isInvincible = true;
+        invincibilityTimer = duration;
+    }
+
+    void DisableInvincibility()
+    {
+        isInvincible = false;
+        invincibilityTimer = 0f;
+    }
+
+    // ====================
+    // XUYEN QUA ENEMY
+    // ====================
+
+    void EnablePhaseThrough()
+    {
+        Collider2D[] enemyColliders = FindObjectsByType<Collider2D>(FindObjectsSortMode.None);
+        foreach (Collider2D enemyCollider in enemyColliders)
+        {
+            if (enemyCollider.CompareTag(enemyTag) && soldierCollider != null)
+            {
+                Physics2D.IgnoreCollision(soldierCollider, enemyCollider, true);
+            }
+        }
+    }
+
+    void DisablePhaseThrough()
+    {
+        Collider2D[] enemyColliders = FindObjectsByType<Collider2D>(FindObjectsSortMode.None);
+        foreach (Collider2D enemyCollider in enemyColliders)
+        {
+            if (enemyCollider.CompareTag(enemyTag) && soldierCollider != null)
+            {
+                Physics2D.IgnoreCollision(soldierCollider, enemyCollider, false);
+            }
+        }
+    }
+
+    // ====================
+    // CAP NHAT BO DEM
+    // ====================
+
+    void UpdateAllTimers()
+    {
+        UpdateDashTimer();
+        UpdateKnockbackTimer();
+        UpdateHurtTimer();
+        UpdateInvincibilityTimer();
+        UpdateJumpTimer();
+        UpdateAttackTimer();
+    }
+
+    void UpdateDashTimer()
+    {
         if (dashCooldownTimer > 0)
             dashCooldownTimer -= Time.deltaTime;
 
-        // Giảm thời gian knockback - khi hết knockback di chuyển bình thường
-        if (isInKnockback)
-        {
-            knockbackTimer -= Time.deltaTime;
-            if (knockbackTimer <= 0)
-                isInKnockback = false;
-        }
-
-        // Giảm thời gian bị đánh (hurt state) - dùng cho animation bị đánh
-        if (isHurting)
-        {
-            hurtTimer -= Time.deltaTime;
-            if (hurtTimer <= 0)
-                isHurting = false;
-        }
-
-        // Giảm thời gian bất khả xâm phạm - khi hết có thể bị đánh
-        if (isInvincible)
-        {
-            invincibilityTimer -= Time.deltaTime;
-            if (invincibilityTimer <= 0)
-                isInvincible = false;
-        }
-
-        // Dừng nhảy khi chạm đất
-        if (isGrounded && isJumping)
-        {
-            isJumping = false;
-            DisablePhaseThrough();  // Bật lại va chạm với Enemy
-        }
-
-        // Giảm thời gian dash - khi hết kết thúc dash
         if (isDashing)
         {
             dashTimeLeft -= Time.deltaTime;
@@ -200,169 +401,185 @@ public class SoldierController : MonoBehaviour
         }
     }
 
-    void StartDash()
+    void UpdateKnockbackTimer()
     {
-        // Bắt đầu trạng thái dash
-        isDashing = true;
-        dashTimeLeft = dashDuration;
-        dashCooldownTimer = dashCooldown;  // Bắt đầu cooldown
-        
-        // Tính hướng dash (1 = phải, -1 = trái) từ hướng sprite
-        float dashDir = sr.flipX ? -1 : 1;
-        
-        // Áp dụng lực dash
-        rb.linearVelocity = new Vector2(dashDir * dashForce, 0);
-        rb.gravityScale = 0;  // Tắt trọng lực khi dash
-
-        // Bất khả xâm phạm khi dash - không bị đánh trong lúc dash
-        isInvincible = true;
-        invincibilityTimer = dashDuration;
-
-        EnablePhaseThrough();  // Xuyên qua Enemy khi dash
+        if (isInKnockback)
+        {
+            knockbackTimer -= Time.deltaTime;
+            if (knockbackTimer <= 0)
+                isInKnockback = false;
+        }
     }
 
-    void StopDash()
+    void UpdateHurtTimer()
     {
-        // Kết thúc dash
-        isDashing = false;
-        rb.gravityScale = 3;  // Bật lại trọng lực
-
-        // Bật lại collision an toàn (kiểm tra không nằm trong Enemy)
-        DisablePhaseThrough();
+        if (isHurting)
+        {
+            hurtTimer -= Time.deltaTime;
+            if (hurtTimer <= 0)
+                isHurting = false;
+        }
     }
 
-    void StartAttack()
+    void UpdateInvincibilityTimer()
     {
-        // Bắt đầu trạng thái tấn công
-        isAttacking = true;
-        attackTimer = attackDuration;  // Timer để kiểm soát thời gian animation
-        
-        // Lặp giữa 2 animation tấn công (0 và 1)
-        attackIndex = (attackIndex + 1) % 2;
-        animator.SetInteger("attackIndex", attackIndex);
-        animator.SetBool("isAttacking", true);
-        hasDealtDamageThisAttack = false;  // Reset để tấn công mới gây sát thương
-    }
-
-    // Nhận sát thương từ Enemy - bị knockback
-    public void TakeDamage(int damage, Vector2 knockbackDirection)
-    {
-        // Nếu đang bất khả xâm phạm (nhảy/dash) thì bỏ qua sát thương
         if (isInvincible)
         {
-            Debug.Log("Player đang bất khả xâm phạm!");
-            return;
+            invincibilityTimer -= Time.deltaTime;
+            if (invincibilityTimer <= 0)
+            {
+                DisableInvincibility();
+            }
         }
+    }
 
-        // Nếu đã chết thì không chịu sát thương thêm
-        if (isDeath)
+    void UpdateJumpTimer()
+    {
+        if (isGrounded && isJumping)
         {
+            isJumping = false;
+            DisablePhaseThrough();
+        }
+    }
+
+    void UpdateAttackTimer()
+    {
+        if (isAttacking)
+        {
+            attackTimer -= Time.deltaTime;
+
+            // Gay sat thuong o giua animation
+            if (!hasDealtDamageThisAttack && attackTimer <= attackDuration / 2f)
+            {
+                ExecuteAttackDamage();
+                hasDealtDamageThisAttack = true;
+            }
+
+            // Ket thuc tan cong
+            if (attackTimer <= 0)
+            {
+                isAttacking = false;
+                animator.SetBool("isAttacking", false);
+            }
+        }
+    }
+
+    // ====================
+    // NHAN SAT THUONG
+    // ====================
+
+    public void TakeDamage(int damage, Vector2 knockbackDirection)
+    {
+        // BAT TU - Bo qua sat thuong
+        if (isInvincible)
+        {
+            Debug.Log("Player bat tu! Bo qua sat thuong");
             return;
         }
 
-        Debug.Log("Soldier nhận " + damage + " sát thương");
+        if (IsDead()) return;
 
-        // Trừ máu
+        ApplyDamage(damage);
+        ApplyKnockback(knockbackDirection);
+        ShowHurtAnimation();
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            // Bat tu ngan sau khi bi danh
+            EnableInvincibility(invincibilityDuration);
+        }
+    }
+
+    void ApplyDamage(int damage)
+    {
         currentHealth -= damage;
-        Debug.Log("Soldier còn " + currentHealth + " máu");
+        Debug.Log("Player nhan " + damage + " sat thuong. Con " + currentHealth + " mau");
 
-        // Cập nhật UI thanh máu
         if (healthBarUI != null)
         {
             healthBarUI.UpdateHealthBar(currentHealth, maxHealth);
         }
+    }
 
-        // Kiểm tra nếu máu <= 0 thì chết
-        if (currentHealth <= 0)
-        {
-            Die();
-            return;
-        }
-
-        // Bắt đầu knockback - áp dụng lực đẩy
+    void ApplyKnockback(Vector2 direction)
+    {
         isInKnockback = true;
         knockbackTimer = knockbackDuration;
-        
-        // Đặt trạng thái bị đánh để hiển thị animation
+
+        direction.Normalize();
+        rb.linearVelocity = new Vector2(direction.x * knockbackForce, rb.linearVelocity.y);
+    }
+
+    void ShowHurtAnimation()
+    {
         isHurting = true;
         hurtTimer = hurtDuration;
-        
-        // Chuẩn hóa và áp dụng hướng knockback
-        knockbackDirection.Normalize();
-        rb.linearVelocity = new Vector2(knockbackDirection.x * knockbackForce, rb.linearVelocity.y);
     }
 
     void Die()
     {
-        // Đặt trạng thái chết
         isDeath = true;
         isHurting = true;
-
-        Debug.Log("Soldier chết!");
-
-        // Dừng di chuyển ngay lập tức
         rb.linearVelocity = Vector2.zero;
 
-        // Set animation isDeath cho Animator (nếu có)
+        Debug.Log("Player chet!");
+
         if (animator != null)
         {
             animator.SetBool("isDeath", true);
         }
-
-        // Có thể thêm logic respawn hoặc game over ở đây
-        // Ví dụ: Invoke("Respawn", 2f);
     }
 
-    /// Hồi máu cho Soldier
+    // ====================
+    // HOI PHUC & NANG CAP
+    // ====================
+
     public void Heal(int amount)
     {
-        if (isDeath) return;
+        if (IsDead()) return;
 
         currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
-        Debug.Log("Soldier hồi " + amount + " máu. Máu hiện tại: " + currentHealth);
+        Debug.Log("Hoi " + amount + " mau. Mau hien tai: " + currentHealth);
 
-        // Cập nhật UI thanh máu
         if (healthBarUI != null)
         {
             healthBarUI.UpdateHealthBar(currentHealth, maxHealth);
         }
     }
 
-    // Tang mau toi da
     public void IncreaseMaxHealth(int amount)
     {
-        if (isDeath) return;
+        if (IsDead()) return;
 
         maxHealth += amount;
-        
-        Debug.Log("Tang mau toi da: +" + amount + " | Mau toi da moi: " + maxHealth);
+        Debug.Log("Tang mau toi da: +" + amount);
 
-        // Cap nhat UI
         if (healthBarUI != null)
         {
             healthBarUI.UpdateHealthBar(currentHealth, maxHealth);
         }
     }
 
-    // Tang sat thuong
     public void IncreaseDamage(int amount)
     {
-        if (isDeath) return;
+        if (IsDead()) return;
 
         attackDamage += amount;
-        Debug.Log("Tang sat thuong: +" + amount + " | Sat thuong moi: " + attackDamage);
+        Debug.Log("Tang sat thuong: +" + amount);
     }
 
-    // Tang toc do
     public void IncreaseSpeed(float amount)
     {
-        if (isDeath) return;
+        if (IsDead()) return;
 
         moveSpeed += amount;
-        Debug.Log("Tang toc do: +" + amount + " | Toc do moi: " + moveSpeed);
+        Debug.Log("Tang toc do: +" + amount);
     }
 
-    // Nhat vang khi cham vao coin
     public void CollectGold(int amount)
     {
         if (CurrencyManager.Instance != null)
@@ -371,107 +588,45 @@ public class SoldierController : MonoBehaviour
         }
     }
 
-    // Getter methods de lay thong tin chi so (dung cho UI)
-    public int GetCurrentHealth()
-    {
-        return currentHealth;
-    }
+    // ====================
+    // GETTER
+    // ====================
 
-    public int GetMaxHealth()
-    {
-        return maxHealth;
-    }
+    public int GetCurrentHealth() => currentHealth;
+    public int GetMaxHealth() => maxHealth;
+    public int GetAttackDamage() => attackDamage;
+    public float GetMoveSpeed() => moveSpeed;
 
-    public int GetAttackDamage()
-    {
-        return attackDamage;
-    }
+    // ====================
+    // DI CHUYEN & ANIMATION
+    // ====================
 
-    public float GetMoveSpeed()
+    void ApplyMovement()
     {
-        return moveSpeed;
-    }
-
-    void EnablePhaseThrough()
-    {
-        // Tắt va chạm với Enemy layer để có thể xuyên qua khi dash/nhảy
-        Collider2D[] enemyColliders = FindObjectsByType<Collider2D>(FindObjectsSortMode.None);
-        foreach (Collider2D enemyCollider in enemyColliders)
+        if (CanMove())
         {
-            if (enemyCollider.CompareTag(enemyTag) && soldierCollider != null)
-                Physics2D.IgnoreCollision(soldierCollider, enemyCollider, true);
+            rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
         }
     }
 
-    void DisablePhaseThrough()
+    void UpdateFacingDirection()
     {
-        // Bật lại va chạm với Enemy layer - trở về bình thường
-        Collider2D[] enemyColliders = FindObjectsByType<Collider2D>(FindObjectsSortMode.None);
-        foreach (Collider2D enemyCollider in enemyColliders)
-        {
-            if (enemyCollider.CompareTag(enemyTag) && soldierCollider != null)
-                Physics2D.IgnoreCollision(soldierCollider, enemyCollider, false);
-        }
+        if (moveInput.x > 0) sr.flipX = false;
+        else if (moveInput.x < 0) sr.flipX = true;
     }
 
-    void UpdateAnimation()
+    void UpdateAnimations()
     {
-        // Nếu không có Animator thì bỏ qua
         if (animator == null) return;
 
-        // Cập nhật animation tấn công
-        if (isAttacking)
-        {
-            // Giảm timer tấn công
-            attackTimer -= Time.deltaTime;
-            
-            // Gây sát thương ở giữa animation (chỉ 1 lần duy nhất)
-            if (!hasDealtDamageThisAttack && attackTimer <= attackDuration / 2f)
-            {
-                DealDamage();
-                hasDealtDamageThisAttack = true;
-            }
-            
-            // Khi animation kết thúc
-            if (attackTimer <= 0)
-            {
-                isAttacking = false;
-                animator.SetBool("isAttacking", false);
-            }
-        }
-
-        // Cập nhật animation di chuyển - đúng khi di chuyển ngang và không đang tấn công
         bool isWalking = !isAttacking && moveInput.x != 0;
         animator.SetBool("isWalking", isWalking);
-        
-        // Cập nhật animation bị đánh
         animator.SetBool("isHurting", isHurting);
     }
 
-    void DealDamage()
-    {
-        // Tìm tất cả Enemy trong phạm vi tấn công
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, attackRadius, LayerMask.GetMask("Enemy"));
-        
-        // Gây sát thương cho mỗi Enemy bị trúng
-        foreach (Collider2D hitEnemy in hitEnemies)
-        {
-            Debug.Log("Player đánh trúng Enemy: " + hitEnemy.name);
-            
-            // Lấy OrcController và gọi TakeDamage
-            OrcController orcController = hitEnemy.GetComponent<OrcController>();
-            if (orcController != null)
-            {
-                orcController.TakeDamage(attackDamage);
-            }
-
-            GolemController golemController = hitEnemy.GetComponent<GolemController>();
-            if (golemController != null)
-            {
-                golemController.TakeDamage(attackDamage);
-            }
-        }
-    }
+    // ====================
+    // VA CHAM
+    // ====================
 
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -481,19 +636,19 @@ public class SoldierController : MonoBehaviour
             jumpCount = 0;
         }
 
-        // Neu va cham voi Trap thi chet ngay
         if (collision.gameObject.CompareTag(trapTag))
         {
-            Debug.Log("Soldier cham vao Trap!");
+            Debug.Log("Player cham Trap! Chet ngay!");
             Die();
         }
     }
 
-
+    // ====================
+    // DEBUG
+    // ====================
 
     void OnDrawGizmosSelected()
     {
-        // Vẽ phạm vi tấn công
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRadius);
     }

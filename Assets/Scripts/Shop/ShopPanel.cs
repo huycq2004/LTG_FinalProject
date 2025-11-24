@@ -1,133 +1,259 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+
+/// Shop Panel - Quan ly giao dien cua hang
+/// Gom co: Hien thi item, Mua hang, Cap nhat chi so, Animation fade
+
 public class ShopPanel : MonoBehaviour
 {
+    // ====================
+    // CAI DAT CO BAN
+    // ====================
+
     [Header("UI References")]
     public CanvasGroup canvasGroup;
-    public Button closeButton;       // Nut dong shop
-    public Text goldDisplayText;     // Hien thi so vang trong shop (Legacy UI)
-    
+    public Button closeButton;
+    public Text goldDisplayText;
+
     [Header("Shop Items")]
-    public ShopItem[] shopItems;     // Danh sach item ban trong shop
-    
+    public ShopItem[] shopItems;
+
     [Header("Item Buttons")]
-    public Button[] itemButtons;     // Cac nut mua item
-    public Text[] itemNameTexts;     // Ten item (Legacy UI)
-    public Text[] itemPriceTexts;    // Gia item (Legacy UI)
+    public Button[] itemButtons;
+    public Text[] itemNameTexts;
+    public Text[] itemPriceTexts;
 
     [Header("Stats Display")]
-    public Text statsDisplayText;    // Hien thi chi so nhan vat (Health, Damage, Speed)
+    public Text statsDisplayText;
 
     [Header("Animation Settings")]
-    public float fadeSpeed = 10f;    // Toc do fade in/out
+    public float fadeSpeed = 10f;
 
-    private bool isOpen = false;
-    private bool isAnimating = false;
-    private float targetAlpha;
+    // ====================
+    // THANH PHAN
+    // ====================
+
     private SoldierController soldierController;
+
+    // ====================
+    // TRANG THAI
+    // ====================
+
+    private bool isOpen;
+    private bool isAnimating;
+
+    // ====================
+    // BIEN KHAC
+    // ====================
+
+    private float targetAlpha;
+
+    // ====================
+    // KHOI TAO
+    // ====================
 
     void Start()
     {
-        // Khoi tao - panel tat ban dau
-        if (canvasGroup == null)
-            canvasGroup = GetComponent<CanvasGroup>();
+        GetComponents();
+        InitializePanel();
+        SetupCloseButton();
+        FindPlayerController();
+        SetupItemButtons();
+    }
 
+    void GetComponents()
+    {
+        if (canvasGroup == null)
+        {
+            canvasGroup = GetComponent<CanvasGroup>();
+        }
+    }
+
+    void InitializePanel()
+    {
         canvasGroup.alpha = 0;
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;
+    }
 
-        // Gan su kien cho nut dong
+    void SetupCloseButton()
+    {
         if (closeButton != null)
+        {
             closeButton.onClick.AddListener(Close);
+        }
+    }
 
-        // Tim SoldierController de lay thong tin chi so
-        soldierController = GameObject.FindGameObjectWithTag("Player")?.GetComponent<SoldierController>();
-
-        // Khoi tao cac nut mua item
-        SetupItemButtons();
+    void FindPlayerController()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            soldierController = player.GetComponent<SoldierController>();
+        }
     }
 
     void SetupItemButtons()
     {
-        // Gan su kien cho tung nut mua item
         for (int i = 0; i < itemButtons.Length && i < shopItems.Length; i++)
         {
-            int index = i;  // Capture index cho closure
-            
-            if (itemButtons[i] != null)
-            {
-                itemButtons[i].onClick.AddListener(() => BuyItem(index));
-            }
-
-            // Cap nhat text hien thi
-            if (i < itemNameTexts.Length && itemNameTexts[i] != null && i < shopItems.Length && shopItems[i] != null)
-            {
-                itemNameTexts[i].text = shopItems[i].itemName;
-            }
-
-            if (i < itemPriceTexts.Length && itemPriceTexts[i] != null && i < shopItems.Length && shopItems[i] != null)
-            {
-                itemPriceTexts[i].text = shopItems[i].price.ToString();
-            }
+            SetupSingleButton(i);
+            UpdateItemDisplay(i);
         }
     }
 
+    void SetupSingleButton(int index)
+    {
+        if (itemButtons[index] != null)
+        {
+            itemButtons[index].onClick.AddListener(() => BuyItem(index));
+        }
+    }
+
+    void UpdateItemDisplay(int index)
+    {
+        UpdateItemName(index);
+        UpdateItemPrice(index);
+    }
+
+    void UpdateItemName(int index)
+    {
+        if (IsValidItemDisplay(index, itemNameTexts))
+        {
+            itemNameTexts[index].text = shopItems[index].itemName;
+        }
+    }
+
+    void UpdateItemPrice(int index)
+    {
+        if (IsValidItemDisplay(index, itemPriceTexts))
+        {
+            itemPriceTexts[index].text = shopItems[index].price.ToString();
+        }
+    }
+
+    bool IsValidItemDisplay(int index, Text[] textArray)
+    {
+        return index < textArray.Length
+            && textArray[index] != null
+            && shopItems[index] != null;
+    }
+
+    // ====================
+    // CAP NHAT CHINH
+    // ====================
+
     void Update()
     {
-        // Xu ly fade in/out animation
-        if (isAnimating)
-        {
-            canvasGroup.alpha = Mathf.Lerp(canvasGroup.alpha, targetAlpha, Time.deltaTime * fadeSpeed);
-            
-            // Hoan thanh animation khi alpha gan bang target
-            if (Mathf.Abs(canvasGroup.alpha - targetAlpha) < 0.01f)
-            {
-                canvasGroup.alpha = targetAlpha;
-                isAnimating = false;
-
-                // Tat UI khi alpha = 0
-                if (targetAlpha == 0)
-                {
-                    canvasGroup.interactable = false;
-                    canvasGroup.blocksRaycasts = false;
-                }
-            }
-        }
-
-        // Cap nhat hien thi vang
+        HandleFadeAnimation();
         UpdateGoldDisplay();
-        
-        // Cap nhat hien thi chi so nhan vat khi shop mo
+
         if (isOpen)
         {
             UpdateStatsDisplay();
         }
     }
 
+    // ====================
+    // ANIMATION
+    // ====================
+
+    void HandleFadeAnimation()
+    {
+        if (!isAnimating) return;
+
+        LerpAlpha();
+        CheckAnimationComplete();
+    }
+
+    void LerpAlpha()
+    {
+        canvasGroup.alpha = Mathf.Lerp(canvasGroup.alpha, targetAlpha, Time.deltaTime * fadeSpeed);
+    }
+
+    void CheckAnimationComplete()
+    {
+        if (Mathf.Abs(canvasGroup.alpha - targetAlpha) < 0.01f)
+        {
+            CompleteAnimation();
+        }
+    }
+
+    void CompleteAnimation()
+    {
+        canvasGroup.alpha = targetAlpha;
+        isAnimating = false;
+
+        if (targetAlpha == 0)
+        {
+            DisablePanelInteraction();
+        }
+    }
+
+    void EnablePanelInteraction()
+    {
+        canvasGroup.interactable = true;
+        canvasGroup.blocksRaycasts = true;
+    }
+
+    void DisablePanelInteraction()
+    {
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
+    }
+
+    // ====================
+    // CAP NHAT HIEN THI
+    // ====================
+
     void UpdateGoldDisplay()
     {
-        if (goldDisplayText != null && CurrencyManager.Instance != null)
+        if (CanUpdateGoldDisplay())
         {
             goldDisplayText.text = CurrencyManager.Instance.GetGold().ToString();
         }
     }
 
+    bool CanUpdateGoldDisplay()
+    {
+        return goldDisplayText != null && CurrencyManager.Instance != null;
+    }
+
     void UpdateStatsDisplay()
     {
-        if (statsDisplayText == null || soldierController == null)
-            return;
+        if (!CanUpdateStatsDisplay()) return;
 
-        string statsText = string.Format(
+        statsDisplayText.text = BuildStatsText();
+    }
+
+    bool CanUpdateStatsDisplay()
+    {
+        return statsDisplayText != null && soldierController != null;
+    }
+
+    string BuildStatsText()
+    {
+        return string.Format(
             "Máu: {0}/{1}\nSát Thương: {2}\nTốc Độ: {3:F1}",
             soldierController.GetCurrentHealth(),
             soldierController.GetMaxHealth(),
             soldierController.GetAttackDamage(),
             soldierController.GetMoveSpeed()
         );
-
-        statsDisplayText.text = statsText;
     }
+
+    void ClearStatsDisplay()
+    {
+        if (statsDisplayText != null)
+        {
+            statsDisplayText.text = "";
+        }
+    }
+
+    // ====================
+    // MO/DONG SHOP
+    // ====================
 
     public void Open()
     {
@@ -135,17 +261,11 @@ public class ShopPanel : MonoBehaviour
 
         isOpen = true;
         targetAlpha = 1f;
-        
-        // Bat tuong tac
-        canvasGroup.interactable = true;
-        canvasGroup.blocksRaycasts = true;
-        
-        // Su dung fade animation
         isAnimating = true;
-        
-        // Cap nhat trang thai cac nut (kich hoat/vo hieu hoa neu khong du tien)
+
+        EnablePanelInteraction();
         UpdateButtonStates();
-        
+
         Debug.Log("Shop mo!");
     }
 
@@ -156,13 +276,9 @@ public class ShopPanel : MonoBehaviour
         isOpen = false;
         isAnimating = true;
         targetAlpha = 0;
-        
-        // Tat hien thi chi so khi dong shop
-        if (statsDisplayText != null)
-        {
-            statsDisplayText.text = "";
-        }
-        
+
+        ClearStatsDisplay();
+
         Debug.Log("Shop dong!");
     }
 
@@ -171,10 +287,13 @@ public class ShopPanel : MonoBehaviour
         return isOpen;
     }
 
+    // ====================
+    // MUA ITEM
+    // ====================
+
     void BuyItem(int itemIndex)
     {
-        // Kiem tra index hop le
-        if (itemIndex < 0 || itemIndex >= shopItems.Length)
+        if (!IsValidItemIndex(itemIndex))
         {
             Debug.LogWarning("Item index khong hop le!");
             return;
@@ -187,54 +306,68 @@ public class ShopPanel : MonoBehaviour
             return;
         }
 
-        // Kiem tra va tru vang
-        if (CurrencyManager.Instance != null && CurrencyManager.Instance.SpendGold(item.price))
+        if (TryPurchaseItem(item))
         {
-            Debug.Log("Da mua: " + item.itemName + " gia " + item.price + " vang");
-            
-            // Ap dung hieu ung item
-            ApplyItemEffect(item);
-            
-            // Cap nhat trang thai cac nut
-            UpdateButtonStates();
+            ProcessSuccessfulPurchase(item);
         }
         else
         {
-            Debug.Log("Khong du vang de mua " + item.itemName + "!");
+            ProcessFailedPurchase(item);
         }
     }
 
+    bool IsValidItemIndex(int index)
+    {
+        return index >= 0 && index < shopItems.Length;
+    }
+
+    bool TryPurchaseItem(ShopItem item)
+    {
+        return CurrencyManager.Instance != null
+            && CurrencyManager.Instance.SpendGold(item.price);
+    }
+
+    void ProcessSuccessfulPurchase(ShopItem item)
+    {
+        Debug.Log("Da mua: " + item.itemName + " gia " + item.price + " vang");
+        ApplyItemEffect(item);
+        UpdateButtonStates();
+    }
+
+    void ProcessFailedPurchase(ShopItem item)
+    {
+        Debug.Log("Khong du vang de mua " + item.itemName + "!");
+    }
+
+    // ====================
+    // AP DUNG HIEU UNG ITEM
+    // ====================
+
     void ApplyItemEffect(ShopItem item)
     {
-        // Tim Soldier de ap dung hieu ung
-        GameObject soldierObj = GameObject.FindGameObjectWithTag("Player");
-        if (soldierObj == null)
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null)
         {
             Debug.LogWarning("Khong tim thay Player!");
             return;
         }
 
-        // Su dung SendMessage de tranh loi reference
         switch (item.itemType)
         {
             case ItemType.Health:
-                soldierObj.SendMessage("Heal", item.value, SendMessageOptions.DontRequireReceiver);
-                Debug.Log("Hoi " + item.value + " mau");
+                ApplyHealthEffect(player, item);
                 break;
 
             case ItemType.MaxHealth:
-                soldierObj.SendMessage("IncreaseMaxHealth", item.value, SendMessageOptions.DontRequireReceiver);
-                Debug.Log("Tang mau toi da: +" + item.value);
+                ApplyMaxHealthEffect(player, item);
                 break;
 
             case ItemType.Damage:
-                soldierObj.SendMessage("IncreaseDamage", item.value, SendMessageOptions.DontRequireReceiver);
-                Debug.Log("Tang sat thuong: +" + item.value);
+                ApplyDamageEffect(player, item);
                 break;
 
             case ItemType.Speed:
-                soldierObj.SendMessage("IncreaseSpeed", (float)item.value, SendMessageOptions.DontRequireReceiver);
-                Debug.Log("Tang toc do: +" + item.value);
+                ApplySpeedEffect(player, item);
                 break;
 
             default:
@@ -243,20 +376,52 @@ public class ShopPanel : MonoBehaviour
         }
     }
 
+    void ApplyHealthEffect(GameObject player, ShopItem item)
+    {
+        player.SendMessage("Heal", item.value, SendMessageOptions.DontRequireReceiver);
+        Debug.Log("Hoi " + item.value + " mau");
+    }
+
+    void ApplyMaxHealthEffect(GameObject player, ShopItem item)
+    {
+        player.SendMessage("IncreaseMaxHealth", item.value, SendMessageOptions.DontRequireReceiver);
+        Debug.Log("Tang mau toi da: +" + item.value);
+    }
+
+    void ApplyDamageEffect(GameObject player, ShopItem item)
+    {
+        player.SendMessage("IncreaseDamage", item.value, SendMessageOptions.DontRequireReceiver);
+        Debug.Log("Tang sat thuong: +" + item.value);
+    }
+
+    void ApplySpeedEffect(GameObject player, ShopItem item)
+    {
+        player.SendMessage("IncreaseSpeed", (float)item.value, SendMessageOptions.DontRequireReceiver);
+        Debug.Log("Tang toc do: +" + item.value);
+    }
+
+    // ====================
+    // CAP NHAT TRANG THAI NUT
+    // ====================
+
     void UpdateButtonStates()
     {
-        // Kich hoat/vo hieu hoa cac nut dua tren so vang hien tai
         if (CurrencyManager.Instance == null) return;
 
         int currentGold = CurrencyManager.Instance.GetGold();
 
         for (int i = 0; i < itemButtons.Length && i < shopItems.Length; i++)
         {
-            if (itemButtons[i] != null && shopItems[i] != null)
-            {
-                bool canAfford = currentGold >= shopItems[i].price;
-                itemButtons[i].interactable = canAfford;
-            }
+            UpdateSingleButtonState(i, currentGold);
+        }
+    }
+
+    void UpdateSingleButtonState(int index, int currentGold)
+    {
+        if (itemButtons[index] != null && shopItems[index] != null)
+        {
+            bool canAfford = currentGold >= shopItems[index].price;
+            itemButtons[index].interactable = canAfford;
         }
     }
 }
