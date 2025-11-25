@@ -2,7 +2,7 @@
 using System.Collections;
 
 /// Boss Controller - Dieu khien hanh vi cua Boss
-/// Gom co: Patrol, Chase, Attack, Phase Transition
+/// Gom co: Patrol, Chase, Attack, Phase Transition, Projectile Attack
 public class BossController : MonoBehaviour
 {
     // ====================
@@ -10,74 +10,74 @@ public class BossController : MonoBehaviour
     // ====================
 
     [Header("Thong So Co Ban")]
-    public int maxHealth = 50;              // Mau toi da
-    public float moveSpeed = 3f;            // Toc do di chuyen binh thuong
-    public float chaseSpeed = 5f;           // Toc do duoi theo player
+    public int maxHealth = 50;
+    public float moveSpeed = 3f;
+    public float chaseSpeed = 5f;
 
     [Header("Pham Vi")]
-    public float detectionRange = 12f;      // Pham vi phat hien player
-    public float meleeRange = 2f;           // Pham vi tan cong can chien
-    public float rangedRange = 8f;          // Pham vi tan cong tam xa
-    public float stoppingDistance = 1.5f;   // Khoang cach dung lai
+    public float detectionRange = 12f;
+    public float meleeRange = 2f;
+    public float rangedRange = 8f;
+    public float stoppingDistance = 1.5f;
 
     [Header("Sat Thuong")]
-    public int meleeDamage = 3;             // Sat thuong can chien
-    public int rangedDamage = 5;            // Sat thuong tam xa
+    public int meleeDamage = 3;
+    public int rangedDamage = 5;
 
     [Header("Thoi Gian Tan Cong")]
-    public float attackCooldown = 2f;           // Thoi gian cho giua cac don
-    public float comboAttackCooldown = 4f;      // Thoi gian cho sau combo
+    public float attackCooldown = 2f;
+    public float comboAttackCooldown = 4f;
 
     [Header("Chuyen Pha")]
-    public float phase2HealthPercent = 0.65f;   // Mau de vao phase 2 (65%)
-    public float phase3HealthPercent = 0.35f;   // Mau de vao phase 3 (35%)
+    public float phase2HealthPercent = 0.65f;
+    public float phase3HealthPercent = 0.35f;
 
     [Header("Toc Do Di Chuyen")]
-    public float dashSpeed = 15f;           // Toc do dash
-    public float retreatSpeed = 6f;         // Toc do lui
-    public float jumpForce = 15f;           // Luc nhay
+    public float dashSpeed = 15f;
+    public float retreatSpeed = 6f;
+    public float jumpForce = 15f;
 
     [Header("Ban Kinh Tan Cong")]
-    public float meleeAttackRadius = 2f;        // Ban kinh tan cong can chien
-    public float rangedAttackRadius = 3f;       // Ban kinh tan cong tam xa
+    public float meleeAttackRadius = 2f;
+    public float rangedAttackRadius = 3f;
 
-    [Header("Tuan Tra")]
-    public float patrolDistance = 5f;           // Khoang cach tuan tra
+    [Header("He Thong Ban Dan")]
+    public GameObject projectilePrefab;
+    public Transform projectileSpawnPoint;
+    
+    [Header("Thong So Dan")]
+    public float projectileSpeed = 10f;
+    public float projectileLifetime = 5f;
+
+    [Header("Thanh Mau")]
+    public BossHealthBarUI healthBarUI;
 
     // ====================
-    // THANH PHAN
+    // THANH PHAM
     // ====================
 
-    private Rigidbody2D rb;                 // Vat ly
-    private SpriteRenderer sr;              // Hinh anh
-    private Animator animator;              // Animation
-    private Transform playerTransform;      // Vi tri player
-    private Collider2D bossCollider;        // Va cham boss
-    private Collider2D playerCollider;      // Va cham player
+    private Rigidbody2D rb;
+    private SpriteRenderer sr;
+    private Animator animator;
+    private Transform playerTransform;
+    private Collider2D bossCollider;
+    private Collider2D playerCollider;
 
     // ====================
     // TRANG THAI
     // ====================
 
-    private int currentHealth;              // Mau hien tai
-    private int currentPhase = 1;           // Phase hien tai (1, 2, 3)
-    private bool isAttacking;               // Dang tan cong?
-    private bool isEnraged;                 // Dang phan no?
+    private int currentHealth;
+    private int currentPhase = 1;
+    private bool isAttacking;
+    private bool isEnraged;
 
     // ====================
     // BO DEM THOI GIAN
     // ====================
 
-    private float attackCooldownTimer;      // Dem thoi gian cooldown
-    private float enrageTimer;              // Dem thoi gian phan no
-
-    // ====================
-    // TUAN TRA
-    // ====================
-
-    private Vector3 patrolLeft;             // Diem tuan tra trai
-    private Vector3 patrolRight;            // Diem tuan tra phai
-    private int patrolDirection = 1;        // Huong di (1=phai, -1=trai)
+    private float attackCooldownTimer;
+    private float enrageTimer;
 
     // ====================
     // LOAI TAN CONG
@@ -85,12 +85,12 @@ public class BossController : MonoBehaviour
 
     private enum AttackType
     {
-        MeleeBasic,     // Can chien co ban
-        MeleeHeavy,     // Can chien manh
-        Combo,          // Combo: Chem - Lui - Ban
-        DashAttack,     // Dash toi roi chem
-        AerialAttack,   // Bay tan cong (Phase 2+)
-        Retreat         // Lui lai
+        MeleeBasic,
+        MeleeHeavy,
+        Combo,
+        DashAttack,
+        AerialAttack,
+        Retreat
     }
 
     // ====================
@@ -100,11 +100,16 @@ public class BossController : MonoBehaviour
     void Start()
     {
         GetComponents();
-        SetupPatrol();
         FindPlayer();
         DisableCollisionWithPlayer();
+        SetupProjectileSpawnPoint();
 
         currentHealth = maxHealth;
+        
+        if (healthBarUI != null)
+        {
+            healthBarUI.ResetHealthBar(maxHealth);
+        }
     }
 
     void Update()
@@ -120,7 +125,7 @@ public class BossController : MonoBehaviour
         }
         else
         {
-            PatrolAround();
+            StayIdle();
         }
 
         UpdateAnimationStates();
@@ -148,12 +153,6 @@ public class BossController : MonoBehaviour
         rb.freezeRotation = true;
     }
 
-    void SetupPatrol()
-    {
-        patrolLeft = transform.position - Vector3.right * patrolDistance;
-        patrolRight = transform.position + Vector3.right * patrolDistance;
-    }
-
     void FindPlayer()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -166,10 +165,21 @@ public class BossController : MonoBehaviour
 
     void DisableCollisionWithPlayer()
     {
-        // Tat va cham vat ly de tranh day nhau
         if (bossCollider != null && playerCollider != null)
         {
             Physics2D.IgnoreCollision(bossCollider, playerCollider, true);
+        }
+    }
+
+    void SetupProjectileSpawnPoint()
+    {
+        // Neu chua co spawn point thi tao mot cai
+        if (projectileSpawnPoint == null)
+        {
+            GameObject spawnObj = new GameObject("ProjectileSpawnPoint");
+            spawnObj.transform.SetParent(transform);
+            spawnObj.transform.localPosition = new Vector3(1f, 0.5f, 0);
+            projectileSpawnPoint = spawnObj.transform;
         }
     }
 
@@ -234,40 +244,12 @@ public class BossController : MonoBehaviour
         isEnraged = true;
         enrageTimer = 10f;
 
-        // Tang suc manh moi phase
         moveSpeed *= 1.2f;
         chaseSpeed *= 1.2f;
         dashSpeed *= 1.1f;
         jumpForce *= 1.1f;
 
         Debug.Log("Boss vao Phase " + newPhase + "!");
-    }
-
-    // ====================
-    // TUAN TRA
-    // ====================
-
-    void PatrolAround()
-    {
-        float targetX = (patrolDirection == 1) ? patrolRight.x : patrolLeft.x;
-
-        // Doi huong khi den cuoi duong
-        if (patrolDirection == 1 && transform.position.x >= targetX)
-        {
-            ChangeDirection(-1);
-        }
-        else if (patrolDirection == -1 && transform.position.x <= targetX)
-        {
-            ChangeDirection(1);
-        }
-
-        rb.linearVelocity = new Vector2(patrolDirection * moveSpeed, rb.linearVelocity.y);
-    }
-
-    void ChangeDirection(int newDirection)
-    {
-        patrolDirection = newDirection;
-        sr.flipX = (newDirection == -1);
     }
 
     // ====================
@@ -281,21 +263,18 @@ public class BossController : MonoBehaviour
         float distance = GetDistanceToPlayer();
         LookAtPlayer();
 
-        // Qua xa - tuan tra
         if (distance > detectionRange)
         {
-            PatrolAround();
+            StayIdle();
             return;
         }
 
-        // Dang cooldown - duoi theo
         if (attackCooldownTimer > 0)
         {
             ChasePlayerSafely(distance);
             return;
         }
 
-        // Chon loai tan cong dua vao khoang cach
         ChooseAndExecuteAttack(distance);
     }
 
@@ -305,26 +284,28 @@ public class BossController : MonoBehaviour
 
         bool shouldFlipLeft = playerTransform.position.x < transform.position.x;
         sr.flipX = shouldFlipLeft;
-        patrolDirection = shouldFlipLeft ? -1 : 1;
     }
 
     void ChasePlayerSafely(float currentDistance)
     {
         if (isAttacking) return;
 
-        // Dung lai neu qua gan
         if (currentDistance <= stoppingDistance)
         {
             StopMoving();
             return;
         }
 
-        // Duoi theo
         float direction = playerTransform.position.x > transform.position.x ? 1 : -1;
         rb.linearVelocity = new Vector2(direction * chaseSpeed, rb.linearVelocity.y);
     }
 
     void StopMoving()
+    {
+        rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+    }
+
+    void StayIdle()
     {
         rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
     }
@@ -337,17 +318,14 @@ public class BossController : MonoBehaviour
     {
         AttackType chosenAttack;
 
-        // GAN (can chien)
         if (distance <= meleeRange)
         {
             chosenAttack = ChooseCloseRangeAttack();
         }
-        // TAM TRUNG (hon hop)
         else if (distance <= rangedRange)
         {
             chosenAttack = ChooseMidRangeAttack();
         }
-        // XA (tam xa)
         else
         {
             chosenAttack = ChooseLongRangeAttack();
@@ -361,13 +339,13 @@ public class BossController : MonoBehaviour
         float rand = Random.value;
 
         if (rand > 0.8f)
-            return AttackType.Retreat;          // 20% lui
+            return AttackType.Retreat;
         else if (rand > 0.5f)
-            return AttackType.Combo;            // 30% combo
+            return AttackType.Combo;
         else if (rand > 0.25f)
-            return AttackType.MeleeBasic;       // 25% can chien co ban
+            return AttackType.MeleeBasic;
         else
-            return AttackType.MeleeHeavy;       // 25% can chien manh
+            return AttackType.MeleeHeavy;
     }
 
     AttackType ChooseMidRangeAttack()
@@ -375,9 +353,9 @@ public class BossController : MonoBehaviour
         int choice = Random.Range(0, 10);
 
         if (choice < 4)
-            return AttackType.DashAttack;       // 40% dash
+            return AttackType.DashAttack;
         else if (choice < 7 && currentPhase >= 2)
-            return AttackType.AerialAttack;     // 30% bay (neu phase 2+)
+            return AttackType.AerialAttack;
         else
             return Random.value > 0.5f ? AttackType.MeleeBasic : AttackType.MeleeHeavy;
     }
@@ -385,9 +363,9 @@ public class BossController : MonoBehaviour
     AttackType ChooseLongRangeAttack()
     {
         if (currentPhase >= 2 && Random.value > 0.5f)
-            return AttackType.AerialAttack;     // 50% bay (phase 2+)
+            return AttackType.AerialAttack;
         else
-            return AttackType.DashAttack;       // 50% dash
+            return AttackType.DashAttack;
     }
 
     // ====================
@@ -460,8 +438,10 @@ public class BossController : MonoBehaviour
     {
         animator.SetBool("isAttacking2", true);
 
-        yield return new WaitForSeconds(0.5f);
-        HitEnemiesInRange(meleeAttackRadius, meleeDamage * 2);
+        yield return new WaitForSeconds(0.3f);
+
+        // BAN DAN TRONG ATTACK2
+        FireProjectile();
 
         yield return new WaitForSeconds(0.5f);
         animator.SetBool("isAttacking2", false);
@@ -473,7 +453,6 @@ public class BossController : MonoBehaviour
     {
         // BUOC 1: CHEM
         animator.SetBool("isAttacking1", true);
-        yield return new WaitForSeconds(0.3f);
         HitEnemiesInRange(meleeAttackRadius, meleeDamage);
         yield return new WaitForSeconds(0.2f);
         animator.SetBool("isAttacking1", false);
@@ -485,11 +464,14 @@ public class BossController : MonoBehaviour
         StopMoving();
         animator.SetBool("isDashing", false);
 
-        // BUOC 3: BAN XA
+        // BUOC 3: BAN DAN
         yield return new WaitForSeconds(0.2f);
         animator.SetBool("isAttacking2", true);
         yield return new WaitForSeconds(0.4f);
-        HitEnemiesInRange(rangedAttackRadius, rangedDamage);
+
+        // BAN DAN TRONG COMBO
+        FireProjectile();
+
         yield return new WaitForSeconds(0.4f);
         animator.SetBool("isAttacking2", false);
 
@@ -498,7 +480,6 @@ public class BossController : MonoBehaviour
 
     IEnumerator DashAttack()
     {
-        // BUOC 1: DASH TOI
         animator.SetBool("isDashing", true);
         DashTowardsPlayer();
 
@@ -507,11 +488,8 @@ public class BossController : MonoBehaviour
         StopMoving();
         animator.SetBool("isDashing", false);
 
-        // BUOC 2: CHEM NHANH
         yield return new WaitForSeconds(0.1f);
         animator.SetBool("isAttacking1", true);
-
-        yield return new WaitForSeconds(0.2f);
         HitEnemiesInRange(meleeAttackRadius, meleeDamage);
 
         yield return new WaitForSeconds(0.2f);
@@ -527,9 +505,6 @@ public class BossController : MonoBehaviour
         animator.SetBool("isFlying", true);
         ReduceGravity();
         JumpTowardsPlayer();
-
-        yield return new WaitForSeconds(0.6f);
-        HitEnemiesInRange(rangedAttackRadius, rangedDamage * 2);
 
         yield return new WaitForSeconds(0.6f);
         RestoreGravity();
@@ -550,6 +525,65 @@ public class BossController : MonoBehaviour
 
         yield return new WaitForSeconds(0.2f);
         attackCooldownTimer = CalculateCooldown(attackCooldown * 0.5f);
+    }
+
+    // ====================
+    // BAN DAN
+    // ====================
+
+    void FireProjectile()
+    {
+        if (projectilePrefab == null)
+        {
+            Debug.LogWarning("Projectile Prefab chua duoc gan!");
+            return;
+        }
+
+        if (!HasPlayer()) return;
+
+        Vector3 spawnPosition = GetProjectileSpawnPosition();
+        GameObject projectile = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
+
+        SetupProjectile(projectile);
+
+        Debug.Log("Boss ban dan!");
+    }
+
+    Vector3 GetProjectileSpawnPosition()
+    {
+        if (projectileSpawnPoint != null)
+        {
+            return projectileSpawnPoint.position;
+        }
+
+        // Neu khong co spawn point thi ban tu vi tri boss + offset
+        float offsetX = sr.flipX ? -1f : 1f;
+        return transform.position + new Vector3(offsetX, 0.5f, 0);
+    }
+
+    void SetupProjectile(GameObject projectile)
+    {
+        BossProjectile projectileScript = projectile.GetComponent<BossProjectile>();
+        if (projectileScript != null)
+        {
+            Vector2 direction = GetDirectionToPlayer();
+            projectileScript.SetDirection(direction);
+            projectileScript.speed = projectileSpeed;
+            projectileScript.damage = CalculateDamage(rangedDamage);
+            projectileScript.lifetime = projectileLifetime;
+        }
+    }
+
+    Vector2 GetDirectionToPlayer()
+    {
+        if (!HasPlayer()) return Vector2.right;
+
+        Vector2 direction = (playerTransform.position - transform.position);
+        
+        // CHI LAY HUONG NGANG - loai bo thanh phan Y
+        direction.y = 0;
+        
+        return direction.normalized;
     }
 
     // ====================
@@ -611,16 +645,16 @@ public class BossController : MonoBehaviour
 
     int CalculateDamage(int baseDamage)
     {
-        float multiplier = 1f + (currentPhase - 1) * 0.3f;  // Tang 30% moi phase
-        if (isEnraged) multiplier *= 1.2f;                  // Tang 20% khi phan no
+        float multiplier = 1f + (currentPhase - 1) * 0.3f;
+        if (isEnraged) multiplier *= 1.2f;
 
         return Mathf.RoundToInt(baseDamage * multiplier);
     }
 
     float CalculateCooldown(float baseCooldown)
     {
-        float multiplier = 1f - (currentPhase - 1) * 0.15f; // Giam 15% moi phase
-        if (isEnraged) multiplier *= 0.8f;                  // Giam 20% khi phan no
+        float multiplier = 1f - (currentPhase - 1) * 0.15f;
+        if (isEnraged) multiplier *= 0.8f;
 
         return baseCooldown * multiplier;
     }
@@ -635,6 +669,11 @@ public class BossController : MonoBehaviour
 
         currentHealth -= damage;
         Debug.Log("Boss nhan " + damage + " sat thuong. Con " + currentHealth + " mau");
+
+        if (healthBarUI != null)
+        {
+            healthBarUI.UpdateHealth(currentHealth, maxHealth);
+        }
 
         if (!isAttacking)
         {
@@ -660,6 +699,12 @@ public class BossController : MonoBehaviour
         animator.SetBool("isDie", true);
         StopMoving();
         StopAllCoroutines();
+        
+        if (healthBarUI != null)
+        {
+            healthBarUI.ForceHide();
+        }
+        
         enabled = false;
     }
 
@@ -673,7 +718,7 @@ public class BossController : MonoBehaviour
 
         if (!HasPlayer())
         {
-            rb.linearVelocity = new Vector2(patrolDirection * moveSpeed, rb.linearVelocity.y);
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
             return;
         }
 
@@ -685,7 +730,7 @@ public class BossController : MonoBehaviour
         }
         else if (distance >= detectionRange)
         {
-            rb.linearVelocity = new Vector2(patrolDirection * moveSpeed, rb.linearVelocity.y);
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
         }
         else
         {
@@ -711,26 +756,10 @@ public class BossController : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        // Tan cong can chien (do)
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, meleeAttackRadius);
-
-        // Tan cong tam xa (xanh duong)
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, rangedAttackRadius);
-
-        // Phat hien (vang)
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
 
-        // Dung lai (hong)
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position, stoppingDistance);
-
-        // Duong tuan tra (xanh la)
-        Gizmos.color = Color.green;
-        Vector3 left = transform.position - Vector3.right * patrolDistance;
-        Vector3 right = transform.position + Vector3.right * patrolDistance;
-        Gizmos.DrawLine(left, right);
     }
 }

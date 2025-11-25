@@ -2,8 +2,10 @@
 using UnityEngine.InputSystem;
 using System.Collections;
 
+
 /// Soldier Controller - Dieu khien nhan vat nguoi choi
-/// Gom co: Di chuyen, Nhay, Dash, Tan cong, Nhan sat thuong
+/// Gom co: Di chuyen, Nhay, Dash (iframe), Tan cong, Nhan sat thuong
+
 public class SoldierController : MonoBehaviour
 {
     // ====================
@@ -34,10 +36,8 @@ public class SoldierController : MonoBehaviour
     public float knockbackDuration = 0.15f;
     public float hurtDuration = 0.2f;
 
-    [Header("Bat Tu (Invincibility)")]
-    public float invincibilityDuration = 0.5f;       // Bat tu sau khi bi danh
-    public float dashInvincibilityDuration = 0.3f;   // Bat tu khi dash
-    public float jumpInvincibilityDuration = 0.4f;   // Bat tu khi nhay
+    [Header("Iframe (Bat Tu)")]
+    public float dashIframeDuration = 0.3f;   // Iframe khi dash
 
     [Header("Tag")]
     public string groundTag = "Ground";
@@ -59,7 +59,6 @@ public class SoldierController : MonoBehaviour
 
     private bool isDashing;
     private bool isAttacking;
-    private bool isJumping;
     private bool isInKnockback;
     private bool isGrounded;
     private bool isHurting;
@@ -234,17 +233,12 @@ public class SoldierController : MonoBehaviour
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         jumpCount++;
         isGrounded = false;
-        isJumping = true;
 
-        // BAT TU KHI NHAY
-        EnableInvincibility(jumpInvincibilityDuration);
-        EnablePhaseThrough();
-
-        Debug.Log("Player nhay! Bat tu trong " + jumpInvincibilityDuration + " giay");
+        Debug.Log("Player nhay!");
     }
 
     // ====================
-    // HANH DONG: DASH
+    // HANH DONG: DASH (DODGE ROLL)
     // ====================
 
     void StartDash()
@@ -257,18 +251,17 @@ public class SoldierController : MonoBehaviour
         rb.linearVelocity = new Vector2(dashDirection * dashForce, 0);
         rb.gravityScale = 0;
 
-        // BAT TU KHI DASH
-        EnableInvincibility(dashInvincibilityDuration);
-        EnablePhaseThrough();
+        // IFRAME KHI DASH - CHI CO BAT TU, KHONG XUYEN QUA
+        isInvincible = true;
+        invincibilityTimer = dashIframeDuration;
 
-        Debug.Log("Player dash! Bat tu trong " + dashInvincibilityDuration + " giay");
+        Debug.Log("Player dash! Iframe trong " + dashIframeDuration + " giay");
     }
 
     void StopDash()
     {
         isDashing = false;
         rb.gravityScale = 3;
-        DisablePhaseThrough();
     }
 
     // ====================
@@ -331,50 +324,6 @@ public class SoldierController : MonoBehaviour
     }
 
     // ====================
-    // BAT TU (INVINCIBILITY)
-    // ====================
-
-    void EnableInvincibility(float duration)
-    {
-        isInvincible = true;
-        invincibilityTimer = duration;
-    }
-
-    void DisableInvincibility()
-    {
-        isInvincible = false;
-        invincibilityTimer = 0f;
-    }
-
-    // ====================
-    // XUYEN QUA ENEMY
-    // ====================
-
-    void EnablePhaseThrough()
-    {
-        Collider2D[] enemyColliders = FindObjectsByType<Collider2D>(FindObjectsSortMode.None);
-        foreach (Collider2D enemyCollider in enemyColliders)
-        {
-            if (enemyCollider.CompareTag(enemyTag) && soldierCollider != null)
-            {
-                Physics2D.IgnoreCollision(soldierCollider, enemyCollider, true);
-            }
-        }
-    }
-
-    void DisablePhaseThrough()
-    {
-        Collider2D[] enemyColliders = FindObjectsByType<Collider2D>(FindObjectsSortMode.None);
-        foreach (Collider2D enemyCollider in enemyColliders)
-        {
-            if (enemyCollider.CompareTag(enemyTag) && soldierCollider != null)
-            {
-                Physics2D.IgnoreCollision(soldierCollider, enemyCollider, false);
-            }
-        }
-    }
-
-    // ====================
     // CAP NHAT BO DEM
     // ====================
 
@@ -384,7 +333,6 @@ public class SoldierController : MonoBehaviour
         UpdateKnockbackTimer();
         UpdateHurtTimer();
         UpdateInvincibilityTimer();
-        UpdateJumpTimer();
         UpdateAttackTimer();
     }
 
@@ -428,17 +376,9 @@ public class SoldierController : MonoBehaviour
             invincibilityTimer -= Time.deltaTime;
             if (invincibilityTimer <= 0)
             {
-                DisableInvincibility();
+                isInvincible = false;
+                invincibilityTimer = 0f;
             }
-        }
-    }
-
-    void UpdateJumpTimer()
-    {
-        if (isGrounded && isJumping)
-        {
-            isJumping = false;
-            DisablePhaseThrough();
         }
     }
 
@@ -470,10 +410,10 @@ public class SoldierController : MonoBehaviour
 
     public void TakeDamage(int damage, Vector2 knockbackDirection)
     {
-        // BAT TU - Bo qua sat thuong
+        // IFRAME - Bo qua sat thuong
         if (isInvincible)
         {
-            Debug.Log("Player bat tu! Bo qua sat thuong");
+            Debug.Log("Player dang iframe! Bo qua sat thuong");
             return;
         }
 
@@ -486,11 +426,6 @@ public class SoldierController : MonoBehaviour
         if (currentHealth <= 0)
         {
             Die();
-        }
-        else
-        {
-            // Bat tu ngan sau khi bi danh
-            EnableInvincibility(invincibilityDuration);
         }
     }
 
