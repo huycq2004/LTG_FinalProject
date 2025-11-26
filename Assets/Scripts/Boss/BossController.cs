@@ -44,7 +44,7 @@ public class BossController : MonoBehaviour
     [Header("He Thong Ban Dan")]
     public GameObject projectilePrefab;
     public Transform projectileSpawnPoint;
-    
+
     [Header("Thong So Dan")]
     public float projectileSpeed = 10f;
     public float projectileLifetime = 5f;
@@ -71,6 +71,7 @@ public class BossController : MonoBehaviour
     private int currentPhase = 1;
     private bool isAttacking;
     private bool isEnraged;
+    private bool hasTriggeredBossMusic = false;
 
     // ====================
     // BO DEM THOI GIAN
@@ -105,7 +106,7 @@ public class BossController : MonoBehaviour
         SetupProjectileSpawnPoint();
 
         currentHealth = maxHealth;
-        
+
         if (healthBarUI != null)
         {
             healthBarUI.ResetHealthBar(maxHealth);
@@ -121,6 +122,7 @@ public class BossController : MonoBehaviour
 
         if (HasPlayer())
         {
+            CheckBossMusicTrigger();
             BossBehavior();
         }
         else
@@ -201,6 +203,35 @@ public class BossController : MonoBehaviour
     {
         if (!HasPlayer()) return float.MaxValue;
         return Vector2.Distance(transform.position, playerTransform.position);
+    }
+
+    // ====================
+    // KICH HOAT NHAC BOSS
+    // ====================
+
+    void CheckBossMusicTrigger()
+    {
+        // Chi kich hoat nhac 1 lan duy nhat
+        if (hasTriggeredBossMusic) return;
+
+        float distance = GetDistanceToPlayer();
+
+        // Khi player vao pham vi tan cong cua boss
+        if (distance <= detectionRange)
+        {
+            TriggerBossMusic();
+        }
+    }
+
+    void TriggerBossMusic()
+    {
+        hasTriggeredBossMusic = true;
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayBossMusic();
+            Debug.Log("Player vao pham vi Boss! Bat nhac Boss!");
+        }
     }
 
     // ====================
@@ -579,10 +610,10 @@ public class BossController : MonoBehaviour
         if (!HasPlayer()) return Vector2.right;
 
         Vector2 direction = (playerTransform.position - transform.position);
-        
+
         // CHI LAY HUONG NGANG - loai bo thanh phan Y
         direction.y = 0;
-        
+
         return direction.normalized;
     }
 
@@ -670,6 +701,11 @@ public class BossController : MonoBehaviour
         currentHealth -= damage;
         Debug.Log("Boss nhan " + damage + " sat thuong. Con " + currentHealth + " mau");
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayHitSound();
+        }
+
         if (healthBarUI != null)
         {
             healthBarUI.UpdateHealth(currentHealth, maxHealth);
@@ -699,12 +735,18 @@ public class BossController : MonoBehaviour
         animator.SetBool("isDie", true);
         StopMoving();
         StopAllCoroutines();
-        
+
         if (healthBarUI != null)
         {
             healthBarUI.ForceHide();
         }
-        
+
+        // Quay lai nhac gameplay khi boss chet
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayGameplayMusic();
+        }
+
         enabled = false;
     }
 

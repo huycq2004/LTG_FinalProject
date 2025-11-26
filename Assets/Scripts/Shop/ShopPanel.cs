@@ -331,6 +331,12 @@ public class ShopPanel : MonoBehaviour
     {
         Debug.Log("Da mua: " + item.itemName + " gia " + item.price + " vang");
         ApplyItemEffect(item);
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayPurchaseSound();
+        }
+
         UpdateButtonStates();
     }
 

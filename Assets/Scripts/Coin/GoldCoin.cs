@@ -24,6 +24,12 @@ public class GoldCoin : MonoBehaviour
             Debug.Log("Nhat duoc " + goldValue + " vang!");
         }
 
+        // Phat am thanh coin thong qua AudioManager
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayCoinSound();
+        }
+
         // Xoa coin
         Destroy(gameObject);
     }

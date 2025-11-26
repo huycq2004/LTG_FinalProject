@@ -129,6 +129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GoldCoin
   goldValue: 10
   playerTag: Player
+  coinSound: {fileID: 8300000, guid: 081acde242c6e4f4592d21cbe3822379, type: 3}
 --- !u!58 &2867748621879970384
 CircleCollider2D:
   m_ObjectHideFlags: 0

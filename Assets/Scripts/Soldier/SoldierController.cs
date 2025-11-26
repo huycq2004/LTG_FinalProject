@@ -90,12 +90,17 @@ public class SoldierController : MonoBehaviour
     // ====================
     // KHOI TAO
     // ====================
-
     void Start()
     {
         GetComponents();
         InitializeStats();
         UpdateHealthUI();
+
+        // Phat nhac gameplay khi bat dau
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayGameplayMusic();
+        }
     }
 
     void GetComponents()
@@ -234,6 +239,11 @@ public class SoldierController : MonoBehaviour
         jumpCount++;
         isGrounded = false;
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayJumpSound();
+        }
+
         Debug.Log("Player nhay!");
     }
 
@@ -254,6 +264,11 @@ public class SoldierController : MonoBehaviour
         // IFRAME KHI DASH - CHI CO BAT TU, KHONG XUYEN QUA
         isInvincible = true;
         invincibilityTimer = dashIframeDuration;
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayDashSound();
+        }
 
         Debug.Log("Player dash! Iframe trong " + dashIframeDuration + " giay");
     }
@@ -422,6 +437,11 @@ public class SoldierController : MonoBehaviour
         ApplyDamage(damage);
         ApplyKnockback(knockbackDirection);
         ShowHurtAnimation();
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayHitSound();
+        }
 
         if (currentHealth <= 0)
         {

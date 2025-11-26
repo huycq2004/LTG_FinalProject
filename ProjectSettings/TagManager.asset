@@ -48,14 +48,14 @@ TagManager:
   - name: Background
     uniqueID: 3826602133
     locked: 0
-  - name: Shop
-    uniqueID: 2727487431
-    locked: 0
   - name: Ground_1
     uniqueID: 1623339907
     locked: 0
   - name: Ground_2
     uniqueID: 1306773897
+    locked: 0
+  - name: Shop
+    uniqueID: 2727487431
     locked: 0
   - name: Enemie
     uniqueID: 2079389923
