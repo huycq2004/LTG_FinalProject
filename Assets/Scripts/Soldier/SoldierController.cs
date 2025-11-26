@@ -90,12 +90,17 @@ public class SoldierController : MonoBehaviour
     // ====================
     // KHOI TAO
     // ====================
-
     void Start()
     {
         GetComponents();
         InitializeStats();
         UpdateHealthUI();
+
+        // Phat nhac gameplay khi bat dau
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayGameplayMusic();
+        }
     }
 
     void GetComponents()
