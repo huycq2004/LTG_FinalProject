@@ -1190,7 +1190,7 @@ PrefabInstance:
       objectReference: {fileID: 519420031}
     - target: {fileID: 9184041252463099868, guid: 31e4b2b9210884241aaca6ee4a3da549, type: 3}
       propertyPath: m_RenderMode
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1311,7 +1311,7 @@ PrefabInstance:
       objectReference: {fileID: 519420031}
     - target: {fileID: 3281731512934079511, guid: c679a29849873f245b2c3cc191d0f85e, type: 3}
       propertyPath: m_RenderMode
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3648825149735584303, guid: c679a29849873f245b2c3cc191d0f85e, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -1348,7 +1348,7 @@ PrefabInstance:
       objectReference: {fileID: 519420031}
     - target: {fileID: 481173475105278602, guid: 53ab695e135a22249aabce1fb9ba56c7, type: 3}
       propertyPath: m_RenderMode
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1224936068961034345, guid: 53ab695e135a22249aabce1fb9ba56c7, type: 3}
       propertyPath: m_SizeDelta.y
