@@ -172,6 +172,10 @@ PrefabInstance:
       value: Soldier
       objectReference: {fileID: 0}
     - target: {fileID: 5615096539971368349, guid: 836512e9fd482f447b153812e069b955, type: 3}
+      propertyPath: maxHealth
+      value: 333
+      objectReference: {fileID: 0}
+    - target: {fileID: 5615096539971368349, guid: 836512e9fd482f447b153812e069b955, type: 3}
       propertyPath: shopPanel
       value: 
       objectReference: {fileID: 1431622551}
@@ -337,6 +341,14 @@ PrefabInstance:
       propertyPath: healthBarUI
       value: 
       objectReference: {fileID: 2002843400}
+    - target: {fileID: 736300199615968144, guid: f0389a9c0aee2b74c9da30cde0c9fedd, type: 3}
+      propertyPath: attackCooldown
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 736300199615968144, guid: f0389a9c0aee2b74c9da30cde0c9fedd, type: 3}
+      propertyPath: comboAttackCooldown
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3370012163750353385, guid: f0389a9c0aee2b74c9da30cde0c9fedd, type: 3}
       propertyPath: m_Name
       value: Sartyr
@@ -1594,15 +1606,15 @@ MonoBehaviour:
   menuMusic: {fileID: 0}
   gameplayMusic: {fileID: 8300000, guid: 4938d97a285f59c4aa3906c41dec3847, type: 3}
   bossMusic: {fileID: 8300000, guid: 10705cb4b8a4df4448b18b5f7429676a, type: 3}
-  musicVolume: 0.5
+  musicVolume: 0.161
   coinSound: {fileID: 8300000, guid: 081acde242c6e4f4592d21cbe3822379, type: 3}
   attackSound: {fileID: 0}
-  hitSound: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: a2b9685afc8cfd540bc6f9fe9f9868c5, type: 3}
   deathSound: {fileID: 0}
-  dashSound: {fileID: 0}
-  jumpSound: {fileID: 0}
+  dashSound: {fileID: 8300000, guid: 35689a65618025340860e2098dabc258, type: 3}
+  jumpSound: {fileID: 8300000, guid: 65dca75f7db48c942b1064ba4ff2f8a4, type: 3}
   healSound: {fileID: 0}
-  purchaseSound: {fileID: 0}
+  purchaseSound: {fileID: 8300000, guid: 239452661789d3a4c9b61702ff00c84a, type: 3}
   sfxVolume: 0.7
 --- !u!4 &1272191323
 Transform:

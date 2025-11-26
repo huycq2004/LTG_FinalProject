@@ -701,6 +701,11 @@ public class BossController : MonoBehaviour
         currentHealth -= damage;
         Debug.Log("Boss nhan " + damage + " sat thuong. Con " + currentHealth + " mau");
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayHitSound();
+        }
+
         if (healthBarUI != null)
         {
             healthBarUI.UpdateHealth(currentHealth, maxHealth);
