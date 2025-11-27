@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - Shop
   - Trap
+  - Water
   layers:
   - Default
   - TransparentFX
@@ -53,6 +54,9 @@ TagManager:
     locked: 0
   - name: Ground_2
     uniqueID: 1306773897
+    locked: 0
+  - name: Trap
+    uniqueID: 2314544627
     locked: 0
   - name: Shop
     uniqueID: 2727487431
