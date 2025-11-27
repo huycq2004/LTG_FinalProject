@@ -66,6 +66,7 @@ public class OrcController : MonoBehaviour
     private int attackIndex;
     private bool hasDealtDamageThisAttack;
     private int currentHealth;
+    public WaveSpawner spawner;
 
     // ====================
     // KHOI TAO
@@ -408,6 +409,12 @@ public class OrcController : MonoBehaviour
 
     void Die()
     {
+        // Thong bao cho spawner neu duoc sinh ra boi spawner
+        if (spawner != null)
+        {
+            spawner.OnEnemyKilled();
+        }
+
         isDeath = true;
         isHurting = true;
 
