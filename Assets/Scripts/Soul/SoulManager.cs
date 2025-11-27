@@ -1,0 +1,162 @@
+using UnityEngine;
+using System;
+
+/// Soul Manager - Quan ly he thong Soul giong Hollow Knight
+/// Danh trung ke dich 5 lan se hoi mau
+public class SoulManager : MonoBehaviour
+{
+    // ====================
+    // SINGLETON
+    // ====================
+
+    public static SoulManager Instance { get; private set; }
+
+    // ====================
+    // THONG SO
+    // ====================
+
+    [Header("Soul Settings")]
+    public int maxSoulCount = 5;  // So soul can de hoi mau
+    public int healAmount = 1;    // So mau hoi khi du soul
+
+    private int currentSoulCount = 0;
+
+    // Event de thong bao khi soul thay doi
+    public event Action<int, int> OnSoulCountChanged;  // (current, max)
+    public event Action OnSoulFull;  // Khi du soul de hoi mau
+    public event Action OnSoulUsed;  // Khi da dung soul hoi mau
+
+    // ====================
+    // KHOI TAO
+    // ====================
+
+    void Awake()
+    {
+        SetupSingleton();
+    }
+
+    void SetupSingleton()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    void Start()
+    {
+        // Trigger event de cap nhat UI
+        OnSoulCountChanged?.Invoke(currentSoulCount, maxSoulCount);
+    }
+
+    // ====================
+    // QUAN LY SOUL
+    // ====================
+
+    /// Goi ham nay khi danh trung ke dich
+    public void AddSoul()
+    {
+        if (currentSoulCount >= maxSoulCount)
+        {
+            Debug.Log("Soul da day!");
+            return;
+        }
+
+        currentSoulCount++;
+        Debug.Log(string.Format("Thu thap Soul! {0}/{1}", currentSoulCount, maxSoulCount));
+
+        // Thong bao thay doi
+        OnSoulCountChanged?.Invoke(currentSoulCount, maxSoulCount);
+
+        // Kiem tra da du soul chua
+        if (currentSoulCount >= maxSoulCount)
+        {
+            OnSoulFull?.Invoke();
+            TryHealPlayer();
+        }
+    }
+
+    /// Tu dong hoi mau khi du soul
+    void TryHealPlayer()
+    {
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+        {
+            // Tim component SoldierController
+            MonoBehaviour[] components = playerObj.GetComponents<MonoBehaviour>();
+            foreach (MonoBehaviour comp in components)
+            {
+                // Kiem tra neu la SoldierController
+                if (comp.GetType().Name == "SoldierController")
+                {
+                    // Goi method Heal bang reflection
+                    System.Reflection.MethodInfo healMethod = comp.GetType().GetMethod("Heal");
+                    System.Reflection.MethodInfo getCurrentHealth = comp.GetType().GetMethod("GetCurrentHealth");
+                    System.Reflection.MethodInfo getMaxHealth = comp.GetType().GetMethod("GetMaxHealth");
+
+                    if (healMethod != null && getCurrentHealth != null && getMaxHealth != null)
+                    {
+                        int currentHealth = (int)getCurrentHealth.Invoke(comp, null);
+                        int maxHealth = (int)getMaxHealth.Invoke(comp, null);
+
+                        // Kiem tra player co bi thuong khong
+                        if (currentHealth < maxHealth)
+                        {
+                            healMethod.Invoke(comp, new object[] { healAmount });
+                            UseSoul();
+                            Debug.Log("Hoi mau tu Soul!");
+                        }
+                        else
+                        {
+                            Debug.Log("Mau da day, khong the hoi!");
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    /// Reset soul ve 0 sau khi hoi mau
+    void UseSoul()
+    {
+        currentSoulCount = 0;
+        OnSoulUsed?.Invoke();
+        OnSoulCountChanged?.Invoke(currentSoulCount, maxSoulCount);
+    }
+
+    // ====================
+    // GETTER
+    // ====================
+
+    public int GetCurrentSoulCount()
+    {
+        return currentSoulCount;
+    }
+
+    public int GetMaxSoulCount()
+    {
+        return maxSoulCount;
+    }
+
+    public bool IsSoulFull()
+    {
+        return currentSoulCount >= maxSoulCount;
+    }
+
+    // ====================
+    // RESET
+    // ====================
+
+    public void ResetSoul()
+    {
+        currentSoulCount = 0;
+        OnSoulCountChanged?.Invoke(currentSoulCount, maxSoulCount);
+        Debug.Log("Reset Soul ve 0");
+    }
+}

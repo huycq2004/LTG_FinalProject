@@ -115,6 +115,21 @@ public class OrcController : MonoBehaviour
                 }
             }
         }
+
+        DisablePlayerCollision();
+    }
+
+    void DisablePlayerCollision()
+    {
+        if (player != null && orcCollider != null)
+        {
+            Collider2D playerCollider = player.GetComponent<Collider2D>();
+            if (playerCollider != null)
+            {
+                Physics2D.IgnoreCollision(orcCollider, playerCollider, true);
+                Debug.Log("Orc: Da tat va cham voi Player");
+            }
+        }
     }
 
     // ====================
@@ -364,6 +379,11 @@ public class OrcController : MonoBehaviour
         ApplyDamage(damage);
         ShowHurtAnimation();
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayHitSound();
+        } 
+
         if (currentHealth <= 0)
         {
             Die();
@@ -396,6 +416,11 @@ public class OrcController : MonoBehaviour
         StopMovement();
         SetDeathAnimation();
         DropGold();
+
+        if (EnemyCountManager.Instance != null)
+        {
+            EnemyCountManager.Instance.AddKill();
+        }
 
         Destroy(gameObject, 0.5f);
     }

@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - Shop
   - Trap
+  - Water
   layers:
   - Default
   - TransparentFX
@@ -66,6 +67,12 @@ TagManager:
   - name: Healthbar
     uniqueID: 3620706287
     locked: 0
+  - name: Kill_count
+    uniqueID: 3641549071
+    locked: 0
+  - name: Soul
+    uniqueID: 994096783
+    locked: 0
   - name: Coin_panel
     uniqueID: 3635519627
     locked: 0
@@ -74,6 +81,9 @@ TagManager:
     locked: 0
   - name: Coins
     uniqueID: 1925143765
+    locked: 0
+  - name: Boss_prompt
+    uniqueID: 3436751501
     locked: 0
   m_RenderingLayers:
   - Default

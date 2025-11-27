@@ -313,6 +313,12 @@ public class SoldierController : MonoBehaviour
     {
         Debug.Log("Player danh trung: " + enemyCollider.name);
 
+        // THEM DONG NAY: Thu thap Soul khi danh trung
+        if (SoulManager.Instance != null)
+        {
+            SoulManager.Instance.AddSoul();
+        }
+
         // Thu danh Boss
         BossController boss = enemyCollider.GetComponent<BossController>();
         if (boss != null)

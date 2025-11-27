@@ -104,6 +104,7 @@ public class GolemController : MonoBehaviour
     {
         DisableGolemCollisions();
         DisableOrcCollisions();
+        DisablePlayerCollision();
     }
 
     void DisableGolemCollisions()
@@ -131,6 +132,19 @@ public class GolemController : MonoBehaviour
             if (orcCollider != null && golemCollider != null)
             {
                 Physics2D.IgnoreCollision(golemCollider, orcCollider, true);
+            }
+        }
+    }
+
+    void DisablePlayerCollision()
+    {
+        if (player != null && golemCollider != null)
+        {
+            Collider2D playerCollider = player.GetComponent<Collider2D>();
+            if (playerCollider != null)
+            {
+                Physics2D.IgnoreCollision(golemCollider, playerCollider, true);
+                Debug.Log("Golem: Da tat va cham voi Player");
             }
         }
     }
@@ -220,6 +234,7 @@ public class GolemController : MonoBehaviour
             }
         }
     }
+
 
     void UpdateIdleTimer()
     {
@@ -379,6 +394,11 @@ public class GolemController : MonoBehaviour
         ApplyDamage(damage);
         ShowHurtAnimation();
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayHitSound();
+        }
+
         if (currentHealth <= 0)
         {
             Die();
@@ -411,6 +431,11 @@ public class GolemController : MonoBehaviour
         StopMovement();
         SetDeathAnimation();
         DropGold();
+
+        if (EnemyCountManager.Instance != null)
+        {
+            EnemyCountManager.Instance.AddKill();
+        }
 
         Destroy(gameObject, 0.5f);
     }
