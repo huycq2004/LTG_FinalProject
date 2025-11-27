@@ -86,6 +86,10 @@ public class SoldierController : MonoBehaviour
     private bool hasDealtDamageThisAttack;
     private int currentHealth;
     private float baseSpeed;
+    public float groundCheckDistance = 0.1f;
+    public LayerMask groundLayer;
+    public Transform groundCheckPoint;
+    public bool isAbleToDoubleJump = false;
 
     // ====================
     // KHOI TAO
@@ -137,6 +141,7 @@ public class SoldierController : MonoBehaviour
         UpdateAllTimers();
         UpdateFacingDirection();
         UpdateAnimations();
+        UpdateIsGrounded();
     }
 
     void FixedUpdate()
@@ -166,8 +171,28 @@ public class SoldierController : MonoBehaviour
     }
 
     bool CanJump()
-    {
-        return isGrounded || jumpCount < 2;
+    {   
+        // Debug.Log("Player nhan nut nhay!, jumpCount: " + jumpCount + "isGrounded: " + isGrounded);
+            
+        //player on ground
+        if(isGrounded == true) 
+        {
+            return true;
+        }
+        //double jump handling
+        //player in air but hasn't jumped yet
+        else if (isGrounded == false && jumpCount == 0 && isAbleToDoubleJump == true) 
+        {
+            //Count as player has jumped
+            jumpCount++;
+            return true;
+        } 
+        //player in air and has jumped once
+        else if (isGrounded == false && jumpCount == 1 && isAbleToDoubleJump == true) 
+        {
+            return true;
+        }
+        return false;
     }
 
     bool CanDash()
@@ -237,14 +262,13 @@ public class SoldierController : MonoBehaviour
     {
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         jumpCount++;
-        isGrounded = false;
 
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlayJumpSound();
         }
 
-        Debug.Log("Player nhay!");
+        // Debug.Log("Player nhay!");
     }
 
     // ====================
@@ -424,6 +448,28 @@ public class SoldierController : MonoBehaviour
             }
         }
     }
+    void UpdateIsGrounded()
+    {
+        // Cast a ray down from the player's position
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance + 0.1f, groundLayer);
+        // Debug.Log("Ground Check Raycast hit: " + (hit.collider != null ? hit.collider.name : "None"));
+        if (hit.collider == null)
+        {
+            isGrounded = false;
+        }
+        else if (hit.collider.name == "Ground_1")
+        {
+            jumpCount = 0;
+            isGrounded = true;
+        }
+        else
+        {
+            isGrounded = false;
+        }
+        
+        // Optional: debug
+        // Debug.DrawRay(transform.position, Vector3.down * (groundCheckDistance + 0.1f), isGrounded ? Color.green : Color.red);
+    }
 
     // ====================
     // NHAN SAT THUONG
@@ -591,11 +637,11 @@ public class SoldierController : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag(groundTag))
-        {
-            isGrounded = true;
-            jumpCount = 0;
-        }
+        // if (collision.gameObject.CompareTag(groundTag))
+        // {
+        //     isGrounded = true;
+        //     jumpCount = 0;
+        // }
 
         if (collision.gameObject.CompareTag(trapTag))
         {
