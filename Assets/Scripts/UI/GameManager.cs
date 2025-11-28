@@ -13,4 +13,8 @@ public class GameManager : MonoBehaviour
         Application.Quit();
         Debug.Log("Game Quit"); 
     }
+    void Start()
+    {
+        AudioManager.Instance.PlayGameplayMusic();
+    }
 }

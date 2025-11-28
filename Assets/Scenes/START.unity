@@ -649,6 +649,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &946893264
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 946893266}
+  - component: {fileID: 946893265}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &946893265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 946893264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58d3b9848b82f943be06743b39ccf0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  menuMusic: {fileID: 0}
+  gameplayMusic: {fileID: 8300000, guid: 4938d97a285f59c4aa3906c41dec3847, type: 3}
+  bossMusic: {fileID: 8300000, guid: 10705cb4b8a4df4448b18b5f7429676a, type: 3}
+  musicVolume: 0.161
+  coinSound: {fileID: 8300000, guid: 081acde242c6e4f4592d21cbe3822379, type: 3}
+  attackSound: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: a2b9685afc8cfd540bc6f9fe9f9868c5, type: 3}
+  deathSound: {fileID: 0}
+  dashSound: {fileID: 8300000, guid: 35689a65618025340860e2098dabc258, type: 3}
+  jumpSound: {fileID: 8300000, guid: 65dca75f7db48c942b1064ba4ff2f8a4, type: 3}
+  healSound: {fileID: 0}
+  purchaseSound: {fileID: 8300000, guid: 239452661789d3a4c9b61702ff00c84a, type: 3}
+  sfxVolume: 0.7
+--- !u!4 &946893266
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 946893264}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.64043, y: -0.91654, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &959773289
 GameObject:
   m_ObjectHideFlags: 0
@@ -972,6 +1029,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3635754405636307799, guid: 0cddd685805fa5b46a1a9ba3954f73ed, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3635754405636307799, guid: 0cddd685805fa5b46a1a9ba3954f73ed, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1980
+      objectReference: {fileID: 0}
+    - target: {fileID: 3635754405636307799, guid: 0cddd685805fa5b46a1a9ba3954f73ed, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 1080
+      objectReference: {fileID: 0}
     - target: {fileID: 4931254287560867024, guid: 0cddd685805fa5b46a1a9ba3954f73ed, type: 3}
       propertyPath: m_Name
       value: Canvas
@@ -980,6 +1049,18 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1877380306}
+    - target: {fileID: 7799523011001893105, guid: 0cddd685805fa5b46a1a9ba3954f73ed, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 519420031}
+    - target: {fileID: 7799523011001893105, guid: 0cddd685805fa5b46a1a9ba3954f73ed, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7799523011001893105, guid: 0cddd685805fa5b46a1a9ba3954f73ed, type: 3}
+      propertyPath: m_PlaneDistance
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -997,3 +1078,4 @@ SceneRoots:
   - {fileID: 959773290}
   - {fileID: 1551654404}
   - {fileID: 1877380307}
+  - {fileID: 946893266}
