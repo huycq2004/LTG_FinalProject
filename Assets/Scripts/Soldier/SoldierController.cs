@@ -172,24 +172,24 @@ public class SoldierController : MonoBehaviour
     }
 
     bool CanJump()
-    {   
+    {
         Debug.Log("Player nhan nut nhay!, jumpCount: " + jumpCount + " isGrounded: " + isGrounded);
-            
+
         //player on ground
-        if(isGrounded == true) 
+        if (isGrounded == true)
         {
             return true;
         }
         //double jump handling
         //player in air but hasn't jumped yet
-        else if (isGrounded == false && jumpCount == 0 && isAbleToDoubleJump == true) 
+        else if (isGrounded == false && jumpCount == 0 && isAbleToDoubleJump == true)
         {
             //Count as player has jumped
             jumpCount++;
             return true;
-        } 
+        }
         //player in air and has jumped once
-        else if (isGrounded == false && jumpCount == 1 && isAbleToDoubleJump == true) 
+        else if (isGrounded == false && jumpCount == 1 && isAbleToDoubleJump == true)
         {
             return true;
         }
@@ -328,21 +328,25 @@ public class SoldierController : MonoBehaviour
             LayerMask.GetMask("Enemy")
         );
 
+        // Chỉ cộng soul 1 lần nếu có ít nhất 1 enemy bị trúng
+        bool hasHitEnemy = false;
+
         foreach (Collider2D hitEnemy in hitEnemies)
         {
             DamageEnemy(hitEnemy);
+            hasHitEnemy = true;
+        }
+
+        // Cộng soul sau khi đã xử lý tất cả enemy
+        if (hasHitEnemy && SoulManager.Instance != null)
+        {
+            SoulManager.Instance.AddSoul();
         }
     }
 
     void DamageEnemy(Collider2D enemyCollider)
     {
         Debug.Log("Player danh trung: " + enemyCollider.name);
-
-        // THEM DONG NAY: Thu thap Soul khi danh trung
-        if (SoulManager.Instance != null)
-        {
-            SoulManager.Instance.AddSoul();
-        }
 
         // Thu danh Boss
         BossController boss = enemyCollider.GetComponent<BossController>();
@@ -469,7 +473,7 @@ public class SoldierController : MonoBehaviour
         {
             isGrounded = false;
         }
-        
+
         // Optional: debug
         // Debug.DrawRay(transform.position, Vector3.down * (groundCheckDistance + 0.1f), isGrounded ? Color.green : Color.red);
     }

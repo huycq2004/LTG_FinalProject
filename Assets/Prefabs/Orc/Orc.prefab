@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 4762660872199112403}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.38, y: -1.98, z: 0}
+  m_LocalPosition: {x: 2.2804737, y: -1.7999244, z: 0}
   m_LocalScale: {x: 0.7016, y: 0.8526, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -81,7 +81,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 2079389923
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: 3799508404887519019, guid: 17f798dfc0528c64bad061beb182fbff, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -158,16 +158,16 @@ MonoBehaviour:
   moveSpeed: 2
   chaseSpeed: 5
   patrolDistance: 1
-  attackRange: 1
+  attackRange: 0.7
   attackDuration: 0.5
   idleAfterAttackDuration: 1.5
-  hurtDuration: 0.5
-  maxHealth: 10
   attackRadius: 0.6
   attackDamage: 1
+  maxHealth: 10
+  hurtDuration: 0.5
   goldCoinPrefab: {fileID: 2155991855934224079, guid: ee2e616553efb1643a24e119cb668f23, type: 3}
   goldDropAmount: 1
-  dropForce: 5
+  spawner: {fileID: 0}
 --- !u!61 &5411013480040890862
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -202,7 +202,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.016619623, y: 0}
+  m_Offset: {x: 0.016619623, y: 0.1219894}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -212,5 +212,5 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.5332392, y: 1.0625}
+  m_Size: {x: 1.5332392, y: 0.6663848}
   m_EdgeRadius: 0
