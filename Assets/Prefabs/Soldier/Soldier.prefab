@@ -81,7 +81,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1327616979
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_Sprite: {fileID: -7978735674136817684, guid: e1a53e6f18f2134408864c9a7329ffb1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -150,7 +150,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.054193348, y: 0}
+  m_Offset: {x: 0.1271892, y: -0.045394853}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -160,7 +160,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.0704739, y: 1.125}
+  m_Size: {x: 0.45055434, y: 0.8618783}
   m_EdgeRadius: 0
 --- !u!50 &6224125240771346518
 Rigidbody2D:
@@ -202,14 +202,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoldierController
   moveSpeed: 5
-  jumpForce: 8
+  jumpForce: 11
   dashForce: 15
   dashDuration: 0.2
   dashCooldown: 1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  isAbleToDoubleJump: 0
   attackDuration: 0.5
   attackRadius: 0.5
   attackDamage: 5
-  maxHealth: 5
+  maxHealth: 333
   healthBarUI: {fileID: 0}
   shopPanel: {fileID: 0}
   knockbackForce: 10

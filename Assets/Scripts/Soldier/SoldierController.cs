@@ -19,6 +19,11 @@ public class SoldierController : MonoBehaviour
     public float dashDuration = 0.2f;
     public float dashCooldown = 1f;
 
+    [Header("Jump Settings")]
+    public LayerMask groundLayer;
+    // public Transform groundCheckPoint;
+    public bool isAbleToDoubleJump = false;
+
     [Header("Tan Cong")]
     public float attackDuration = 0.3f;
     public float attackRadius = 0.5f;
@@ -86,10 +91,6 @@ public class SoldierController : MonoBehaviour
     private bool hasDealtDamageThisAttack;
     private int currentHealth;
     private float baseSpeed;
-    public float groundCheckDistance = 0.1f;
-    public LayerMask groundLayer;
-    public Transform groundCheckPoint;
-    public bool isAbleToDoubleJump = false;
 
     // ====================
     // KHOI TAO
@@ -172,7 +173,7 @@ public class SoldierController : MonoBehaviour
 
     bool CanJump()
     {   
-        // Debug.Log("Player nhan nut nhay!, jumpCount: " + jumpCount + "isGrounded: " + isGrounded);
+        Debug.Log("Player nhan nut nhay!, jumpCount: " + jumpCount + " isGrounded: " + isGrounded);
             
         //player on ground
         if(isGrounded == true) 
@@ -448,16 +449,18 @@ public class SoldierController : MonoBehaviour
             }
         }
     }
+
     void UpdateIsGrounded()
     {
         // Cast a ray down from the player's position
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance + 0.1f, groundLayer);
-        // Debug.Log("Ground Check Raycast hit: " + (hit.collider != null ? hit.collider.name : "None"));
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1f, groundLayer);
+        Debug.Log("Ground Check Raycast hit: " + (hit.collider != null ? hit.collider.name : "None"));
+        // Debug.Log("Ground Check Raycast hit layer name: " + (hit.collider != null ? LayerMask.LayerToName(hit.collider.gameObject.layer) : "None"));
         if (hit.collider == null)
         {
             isGrounded = false;
         }
-        else if (hit.collider.name == "Ground_1")
+        else if (hit.collider.name == "StandableGround")
         {
             jumpCount = 0;
             isGrounded = true;

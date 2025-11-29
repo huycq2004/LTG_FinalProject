@@ -171,30 +171,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Soldier
       objectReference: {fileID: 0}
-    - target: {fileID: 4710263021354252660, guid: 836512e9fd482f447b153812e069b955, type: 3}
-      propertyPath: m_Size.x
-      value: 0.45055434
-      objectReference: {fileID: 0}
-    - target: {fileID: 4710263021354252660, guid: 836512e9fd482f447b153812e069b955, type: 3}
-      propertyPath: m_Size.y
-      value: 0.8618783
-      objectReference: {fileID: 0}
-    - target: {fileID: 4710263021354252660, guid: 836512e9fd482f447b153812e069b955, type: 3}
-      propertyPath: m_Offset.x
-      value: 0.1271892
-      objectReference: {fileID: 0}
-    - target: {fileID: 4710263021354252660, guid: 836512e9fd482f447b153812e069b955, type: 3}
-      propertyPath: m_Offset.y
-      value: -0.045394853
-      objectReference: {fileID: 0}
-    - target: {fileID: 5615096539971368349, guid: 836512e9fd482f447b153812e069b955, type: 3}
-      propertyPath: jumpForce
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 5615096539971368349, guid: 836512e9fd482f447b153812e069b955, type: 3}
-      propertyPath: maxHealth
-      value: 333
-      objectReference: {fileID: 0}
     - target: {fileID: 5615096539971368349, guid: 836512e9fd482f447b153812e069b955, type: 3}
       propertyPath: shopPanel
       value: 
@@ -203,57 +179,11 @@ PrefabInstance:
       propertyPath: healthBarUI
       value: 
       objectReference: {fileID: 281885860}
-    - target: {fileID: 5615096539971368349, guid: 836512e9fd482f447b153812e069b955, type: 3}
-      propertyPath: groundCheckPoint
-      value: 
-      objectReference: {fileID: 48382930}
-    - target: {fileID: 5615096539971368349, guid: 836512e9fd482f447b153812e069b955, type: 3}
-      propertyPath: groundLayer.m_Bits
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5615096539971368349, guid: 836512e9fd482f447b153812e069b955, type: 3}
-      propertyPath: groundCheckDistance
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 2958976814205288223, guid: 836512e9fd482f447b153812e069b955, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 48382930}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 836512e9fd482f447b153812e069b955, type: 3}
---- !u!1 &48382929
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 48382930}
-  m_Layer: 7
-  m_Name: Foot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &48382930
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 48382929}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.012, y: -0.552, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1915748646}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &160834335
 GameObject:
   m_ObjectHideFlags: 0
@@ -5478,7 +5408,7 @@ GameObject:
   - component: {fileID: 868596515}
   - component: {fileID: 868596514}
   m_Layer: 3
-  m_Name: Ground_1
+  m_Name: StandableGround
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
