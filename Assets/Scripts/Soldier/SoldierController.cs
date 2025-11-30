@@ -48,6 +48,9 @@ public class SoldierController : MonoBehaviour
     public string groundTag = "Ground";
     public string enemyTag = "Enemy";
     public string trapTag = "Trap";
+    [Header("GameOver")]
+    public GameObject gameOverPanel;
+
 
     // ====================
     // THANH PHAN
@@ -587,7 +590,21 @@ public class SoldierController : MonoBehaviour
 
         // Reset tat ca du lieu ve mac dinh khi chet
         ResetPlayerDataOnDeath();
+
+        StartCoroutine(ShowGameOverPanel());
     }
+
+    private IEnumerator ShowGameOverPanel()
+    {
+        yield return new WaitForSeconds(0.5f); // delay cho animation death
+
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(true);
+
+        // Dừng game nếu muốn
+        Time.timeScale = 0f;
+    }
+
 
     void ResetPlayerDataOnDeath()
     {
