@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 7082008399488307137}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.3347457, y: -1.5282578, z: 0}
+  m_LocalPosition: {x: 4.674388, y: -1.489995, z: 0}
   m_LocalScale: {x: 0.7685861, y: 0.7871288, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -104,7 +104,7 @@ SortingGroup:
   m_GameObject: {fileID: 7082008399488307137}
   m_Enabled: 1
   m_SortingLayerID: 2079389923
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_SortAtRoot: 0
 --- !u!95 &1965505985371424126
@@ -163,7 +163,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.084223986, y: 0}
+  m_Offset: {x: -0.084223986, y: 0.21586928}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -173,7 +173,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.2978616, y: 2.4375}
+  m_Size: {x: 2.2978616, y: 2.0057614}
   m_EdgeRadius: 0
 --- !u!50 &506372834911131330
 Rigidbody2D:
@@ -217,12 +217,12 @@ MonoBehaviour:
   moveSpeed: 1
   chaseSpeed: 2
   patrolDistance: 2
-  attackRange: 1.6
+  attackRange: 1.3
   attackDuration: 2
   idleAfterAttackDuration: 2
-  hurtDuration: 1
-  maxHealth: 8
   attackRadius: 1.2
-  attackDamage: 5
+  attackDamage: 10
+  maxHealth: 20
+  hurtDuration: 1
   goldCoinPrefab: {fileID: 2155991855934224079, guid: ee2e616553efb1643a24e119cb668f23, type: 3}
   goldDropAmount: 2

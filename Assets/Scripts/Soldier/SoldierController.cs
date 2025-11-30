@@ -458,7 +458,7 @@ public class SoldierController : MonoBehaviour
     {
         // Cast a ray down from the player's position
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1f, groundLayer);
-        Debug.Log("Ground Check Raycast hit: " + (hit.collider != null ? hit.collider.name : "None"));
+        // Debug.Log("Ground Check Raycast hit: " + (hit.collider != null ? hit.collider.name : "None"));
         // Debug.Log("Ground Check Raycast hit layer name: " + (hit.collider != null ? LayerMask.LayerToName(hit.collider.gameObject.layer) : "None"));
         if (hit.collider == null)
         {

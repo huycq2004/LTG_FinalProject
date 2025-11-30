@@ -85,8 +85,8 @@ TagManager:
   - name: Coins
     uniqueID: 1925143765
     locked: 0
-  - name: Boss_prompt
-    uniqueID: 3436751501
+  - name: Reward
+    uniqueID: 1267438925
     locked: 0
   m_RenderingLayers:
   - Default
