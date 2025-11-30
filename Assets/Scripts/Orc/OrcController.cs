@@ -128,7 +128,7 @@ public class OrcController : MonoBehaviour
             if (playerCollider != null)
             {
                 Physics2D.IgnoreCollision(orcCollider, playerCollider, true);
-                Debug.Log("Orc: Da tat va cham voi Player");
+                // Debug.Log("Orc: Da tat va cham voi Player");
             }
         }
     }

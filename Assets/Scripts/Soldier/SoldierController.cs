@@ -13,7 +13,7 @@ public class SoldierController : MonoBehaviour
     // ====================
 
     [Header("Di Chuyen")]
-    public float moveSpeed = 8f;
+    public float moveSpeed = 8f;  // Gia tri mac dinh, se duoc override boi PlayerDataManager
     public float jumpForce = 16f;
     public float dashForce = 20f;
     public float dashDuration = 0.2f;
@@ -27,10 +27,10 @@ public class SoldierController : MonoBehaviour
     [Header("Tan Cong")]
     public float attackDuration = 0.3f;
     public float attackRadius = 0.5f;
-    public int attackDamage = 1;
+    public int attackDamage = 1;  // Gia tri mac dinh, se duoc override boi PlayerDataManager
 
     [Header("Mau")]
-    public int maxHealth = 5;
+    public int maxHealth = 5;  // Gia tri mac dinh, se duoc override boi PlayerDataManager
     public HealthBarUI healthBarUI;
 
     [Header("Shop")]
@@ -98,6 +98,7 @@ public class SoldierController : MonoBehaviour
     void Start()
     {
         GetComponents();
+        LoadPlayerData();
         InitializeStats();
         UpdateHealthUI();
 
@@ -118,15 +119,46 @@ public class SoldierController : MonoBehaviour
 
     void InitializeStats()
     {
-        currentHealth = maxHealth;
         baseSpeed = moveSpeed;
     }
+
+    void LoadPlayerData()
+    {
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerData data = PlayerDataManager.Instance.LoadAllPlayerData();
+            
+            currentHealth = data.currentHealth;
+            maxHealth = data.maxHealth;
+            moveSpeed = data.moveSpeed;
+            attackDamage = data.attackDamage;
+            
+            Debug.Log($"Tai du lieu nguoi choi: HP={currentHealth}/{maxHealth}, Speed={moveSpeed}, ATK={attackDamage}");
+        }
+        else
+        {
+            currentHealth = maxHealth;
+            Debug.Log("PlayerDataManager chua san sang, dung gia tri mac dinh");
+        }
+    }
+
+    //void SavePlayerData()
+    //{
+    //    if (PlayerDataManager.Instance != null)
+    //    {
+    //        PlayerDataManager.Instance.SaveCurrentHealth(currentHealth);
+    //        PlayerDataManager.Instance.SaveMaxHealth(maxHealth);
+    //        PlayerDataManager.Instance.SaveMoveSpeed(moveSpeed);
+    //        PlayerDataManager.Instance.SaveAttackDamage(attackDamage);
+    //    }
+    //}
 
     void UpdateHealthUI()
     {
         if (healthBarUI != null)
         {
-            healthBarUI.ResetHealthBar(maxHealth);
+            // Set thanh mau ngay lap tuc theo mau hien tai khi load game
+            healthBarUI.SetHealthBarImmediate(currentHealth, maxHealth);
         }
     }
 
@@ -513,6 +545,12 @@ public class SoldierController : MonoBehaviour
         currentHealth -= damage;
         Debug.Log("Player nhan " + damage + " sat thuong. Con " + currentHealth + " mau");
 
+        // Luu mau hien tai
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.SaveCurrentHealth(currentHealth);
+        }
+
         if (healthBarUI != null)
         {
             healthBarUI.UpdateHealthBar(currentHealth, maxHealth);
@@ -546,6 +584,19 @@ public class SoldierController : MonoBehaviour
         {
             animator.SetBool("isDeath", true);
         }
+
+        // Reset tat ca du lieu ve mac dinh khi chet
+        ResetPlayerDataOnDeath();
+    }
+
+    void ResetPlayerDataOnDeath()
+    {
+        if (PlayerDataManager.Instance != null)
+        {
+            // Reset tat ca du lieu ve gia tri mac dinh
+            PlayerDataManager.Instance.ResetAllData();
+            Debug.Log("Da reset tat ca du lieu nguoi choi ve mac dinh");
+        }
     }
 
     // ====================
@@ -558,6 +609,12 @@ public class SoldierController : MonoBehaviour
 
         currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
         Debug.Log("Hoi " + amount + " mau. Mau hien tai: " + currentHealth);
+
+        // Luu mau hien tai
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.SaveCurrentHealth(currentHealth);
+        }
 
         if (healthBarUI != null)
         {
@@ -572,6 +629,12 @@ public class SoldierController : MonoBehaviour
         maxHealth += amount;
         Debug.Log("Tang mau toi da: +" + amount);
 
+        // Luu mau toi da
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.SaveMaxHealth(maxHealth);
+        }
+
         if (healthBarUI != null)
         {
             healthBarUI.UpdateHealthBar(currentHealth, maxHealth);
@@ -584,6 +647,12 @@ public class SoldierController : MonoBehaviour
 
         attackDamage += amount;
         Debug.Log("Tang sat thuong: +" + amount);
+
+        // Luu sat thuong
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.SaveAttackDamage(attackDamage);
+        }
     }
 
     public void IncreaseSpeed(float amount)
@@ -592,6 +661,12 @@ public class SoldierController : MonoBehaviour
 
         moveSpeed += amount;
         Debug.Log("Tang toc do: +" + amount);
+
+        // Luu toc do
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.SaveMoveSpeed(moveSpeed);
+        }
     }
 
     public void CollectGold(int amount)

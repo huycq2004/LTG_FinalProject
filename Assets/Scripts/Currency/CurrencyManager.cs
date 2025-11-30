@@ -1,13 +1,11 @@
 using UnityEngine;
 using System;
+using System.Collections;
 
 public class CurrencyManager : MonoBehaviour
 {
     // Singleton pattern
     public static CurrencyManager Instance { get; private set; }
-
-    [Header("Currency Settings")]
-    public int startingGold = 100;  // So vang khoi dau
 
     private int currentGold;
 
@@ -27,15 +25,57 @@ public class CurrencyManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        // Khoi tao vang
-        currentGold = startingGold;
     }
 
     void Start()
     {
+        // Doi PlayerDataManager san sang roi moi tai vang
+        StartCoroutine(InitializeGold());
+    }
+
+    // ====================
+    // KHOI TAO VANG
+    // ====================
+
+    private IEnumerator InitializeGold()
+    {
+        // Doi cho den khi PlayerDataManager san sang
+        while (PlayerDataManager.Instance == null)
+        {
+            Debug.Log("Dang doi PlayerDataManager khoi tao...");
+            yield return null;
+        }
+
+        // Tai vang tu PlayerPrefs
+        LoadGold();
+
         // Trigger event de cap nhat UI
         OnGoldChanged?.Invoke(currentGold);
+    }
+
+    // ====================
+    // LUU VA TAI DU LIEU
+    // ====================
+
+    private void LoadGold()
+    {
+        if (PlayerDataManager.Instance != null)
+        {
+            currentGold = PlayerDataManager.Instance.LoadGold();
+            Debug.Log("Tai vang tu PlayerPrefs: " + currentGold);
+        }
+        else
+        {
+            Debug.LogError("PlayerDataManager khong san sang khi tai vang!");
+        }
+    }
+
+    private void SaveGold()
+    {
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.SaveGold(currentGold);
+        }
     }
 
     // Lay so vang hien tai
@@ -51,6 +91,9 @@ public class CurrencyManager : MonoBehaviour
 
         currentGold += amount;
         Debug.Log("Them vang: +" + amount + " | Tong: " + currentGold);
+        
+        // Luu vang vao PlayerPrefs
+        SaveGold();
         
         // Thong bao vang da thay doi
         OnGoldChanged?.Invoke(currentGold);
@@ -69,6 +112,9 @@ public class CurrencyManager : MonoBehaviour
         {
             currentGold -= amount;
             Debug.Log("Tru vang: -" + amount + " | Con lai: " + currentGold);
+            
+            // Luu vang vao PlayerPrefs
+            SaveGold();
             
             // Thong bao vang da thay doi
             OnGoldChanged?.Invoke(currentGold);
@@ -90,8 +136,13 @@ public class CurrencyManager : MonoBehaviour
     // Reset vang ve gia tri mac dinh
     public void ResetGold()
     {
-        currentGold = startingGold;
+        // Lay gia tri mac dinh tu PlayerDataManager
+        int defaultGold = PlayerDataManager.Instance != null ? 
+            PlayerDataManager.Instance.defaultGold : 100;
+            
+        currentGold = defaultGold;
+        SaveGold();
         OnGoldChanged?.Invoke(currentGold);
-        Debug.Log("Reset vang ve: " + startingGold);
+        Debug.Log("Reset vang ve: " + defaultGold);
     }
 }

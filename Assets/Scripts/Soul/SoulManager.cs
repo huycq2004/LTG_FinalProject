@@ -17,7 +17,7 @@ public class SoulManager : MonoBehaviour
 
     [Header("Soul Settings")]
     public int maxSoulCount = 5;  // So soul can de hoi mau
-    public int healAmount = 1;    // So mau hoi khi du soul
+    public int healAmount = 1;    // Gia tri mac dinh, se duoc override boi PlayerDataManager
 
     private int currentSoulCount = 0;
 
@@ -50,6 +50,9 @@ public class SoulManager : MonoBehaviour
 
     void Start()
     {
+        // Tai heal amount tu PlayerPrefs
+        LoadHealAmount();
+        
         // Trigger event de cap nhat UI
         OnSoulCountChanged?.Invoke(currentSoulCount, maxSoulCount);
     }
@@ -128,6 +131,36 @@ public class SoulManager : MonoBehaviour
         currentSoulCount = 0;
         OnSoulUsed?.Invoke();
         OnSoulCountChanged?.Invoke(currentSoulCount, maxSoulCount);
+    }
+
+    // ====================
+    // LUU VA TAI DU LIEU
+    // ====================
+
+    void LoadHealAmount()
+    {
+        if (PlayerDataManager.Instance != null)
+        {
+            healAmount = PlayerDataManager.Instance.LoadHealAmount();
+            // Debug.Log("Tai heal amount tu PlayerPrefs: " + healAmount);
+        }
+    }
+
+    public void IncreaseHealAmount(int amount)
+    {
+        healAmount += amount;
+        Debug.Log("Tang luong mau hoi: +" + amount);
+
+        // Luu heal amount
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.SaveHealAmount(healAmount);
+        }
+    }
+
+    public int GetHealAmount()
+    {
+        return healAmount;
     }
 
     // ====================

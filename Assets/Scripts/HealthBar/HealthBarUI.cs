@@ -14,15 +14,8 @@ public class HealthBarUI : MonoBehaviour
     private float targetFillAmount;
     private int currentHearts;
 
-    void Start()
-    {
-        // Khoi tao thanh mau day
-        if (healthBarFill != null)
-        {
-            healthBarFill.fillAmount = 1f;
-            targetFillAmount = 1f;
-        }
-    }
+    // Bo Start() de tranh khoi tao thanh mau ve full
+    // SoldierController se tu set gia tri dung khi load du lieu
 
     void Update()
     {
@@ -37,7 +30,7 @@ public class HealthBarUI : MonoBehaviour
         }
     }
 
-    // Cap nhat thanh mau dua tren mau hien tai va mau toi da
+    // Cap nhat thanh mau dua tren mau hien tai va mau toi da (co hieu ung lerp)
     public void UpdateHealthBar(int currentHealth, int maxHealth)
     {
         if (healthBarFill != null && maxHealth > 0)
@@ -47,14 +40,28 @@ public class HealthBarUI : MonoBehaviour
         }
     }
 
-    // Dat lai thanh mau ve trang thai day
+    // Set thanh mau ngay lap tuc khong co hieu ung lerp (dung khi load game)
+    public void SetHealthBarImmediate(int currentHealth, int maxHealth)
+    {
+        if (healthBarFill != null && maxHealth > 0)
+        {
+            float fillAmount = (float)currentHealth / maxHealth;
+            healthBarFill.fillAmount = fillAmount;
+            targetFillAmount = fillAmount;
+            
+            // Cap nhat mau ngay lap tuc
+            healthBarFill.color = Color.Lerp(lowHealthColor, fullHealthColor, fillAmount);
+        }
+    }
+
+    // Dat lai thanh mau ve trang thai day (dung khi bat dau game moi)
     public void ResetHealthBar(int maxHealth)
     {
-        UpdateHealthBar(maxHealth, maxHealth);
         if (healthBarFill != null)
         {
             healthBarFill.fillAmount = 1f;
             targetFillAmount = 1f;
+            healthBarFill.color = fullHealthColor;
         }
     }
 }

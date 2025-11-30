@@ -144,7 +144,7 @@ public class GolemController : MonoBehaviour
             if (playerCollider != null)
             {
                 Physics2D.IgnoreCollision(golemCollider, playerCollider, true);
-                Debug.Log("Golem: Da tat va cham voi Player");
+                // Debug.Log("Golem: Da tat va cham voi Player");
             }
         }
     }
