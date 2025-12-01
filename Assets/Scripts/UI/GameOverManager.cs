@@ -96,7 +96,8 @@ public class GameOver : MonoBehaviour
             // Play Again - Reset du lieu va quay lai game
             Time.timeScale = 1;
             ResetGameData();
-            SceneManager.LoadScene("MAIN SCENE");
+            string currentScene = SceneManager.GetActiveScene().name;
+            SceneManager.LoadScene(currentScene);
         }
         else if (currentIndex == 1)
         {

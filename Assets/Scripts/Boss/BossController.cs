@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Playables;
+using UnityEngine.SceneManagement;
 
 /// Boss Controller - Dieu khien hanh vi cua Boss
 /// Gom co: Patrol, Chase, Attack, Phase Transition, Projectile Attack
@@ -51,6 +53,16 @@ public class BossController : MonoBehaviour
 
     [Header("Thanh Mau")]
     public BossHealthBarUI healthBarUI;
+
+    [Header("Cutscene Ending")]
+    public Transform cutscenePoint;        // nơi player đi tới
+    public float autoMoveSpeed = 3f;       // tốc độ player tự chạy
+    public PlayableDirector endingTimeline; // optional nếu có timeline
+    private bool isEndingSequence = false;  // boss đã chết và đang chạy ending
+    private Transform playerTrans;         // cached player
+    private SoldierController playerCtrl;  // disable control
+    private Rigidbody2D playerRb;          // cho player chạy
+
 
     // ====================
     // THANH PHAM
@@ -752,7 +764,9 @@ public class BossController : MonoBehaviour
             AudioManager.Instance.PlayGameplayMusic();
         }
 
-        enabled = false;
+        StartCoroutine(StartEndingCutscene());
+
+        //enabled = false;
     }
 
     // ====================
@@ -809,4 +823,51 @@ public class BossController : MonoBehaviour
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position, stoppingDistance);
     }
+
+    IEnumerator StartEndingCutscene()
+    {
+        yield return new WaitForSeconds(3f);
+        isEndingSequence = true;
+
+        // tìm player
+        if (playerTrans == null)
+        {
+            var p = GameObject.FindGameObjectWithTag("Player");
+            if (p != null)
+            {
+                playerTrans = p.transform;
+                playerCtrl = p.GetComponent<SoldierController>();
+                playerRb = p.GetComponent<Rigidbody2D>();
+            }
+        }
+
+        // khóa điều khiển người chơi
+        if (playerCtrl != null)
+            playerCtrl.enabled = false;
+
+        yield return new WaitForSeconds(1f); // chờ boss chết xong animation
+
+        // tự động chạy đến cutscene point
+        while (Vector2.Distance(playerTrans.position, cutscenePoint.position) > 0.15f)
+        {
+            animator.SetBool("isRunning", true);
+            float dir = cutscenePoint.position.x > playerTrans.position.x ? 1 : -1;
+
+            // xoay player
+            var sr = playerTrans.GetComponent<SpriteRenderer>();
+            if (sr != null) sr.flipX = dir < 0;
+
+            // chạy tự động
+            playerRb.linearVelocity = new Vector2(dir * autoMoveSpeed, playerRb.linearVelocity.y);
+
+            yield return null;
+        }
+
+        // đến nơi → đứng yên
+        playerRb.linearVelocity = Vector2.zero;
+
+        
+        SceneManager.LoadScene("END GAME");
+    }
+
 }

@@ -8,6 +8,12 @@ using System.Collections;
 
 public class SoldierController : MonoBehaviour
 {
+
+    [Header("Spawn Effect")]
+    public GameObject spawnEffect;      // hiệu ứng khói
+    public float spawnEffectDuration = 1f;
+
+
     // ====================
     // CAI DAT CO BAN
     // ====================
@@ -120,6 +126,8 @@ public class SoldierController : MonoBehaviour
         {
             AudioManager.Instance.PlayGameplayMusic();
         }
+        StartCoroutine(StartSpawn());
+
     }
 
     void GetComponents()
@@ -421,6 +429,8 @@ public class SoldierController : MonoBehaviour
         animator.SetBool("isAttacking", true);
 
         hasDealtDamageThisAttack = false;
+        
+
     }
 
     void ExecuteAttackDamage()
@@ -868,4 +878,28 @@ public class SoldierController : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRadius);
     }
+    IEnumerator StartSpawn()
+    {
+        // 1. Ẩn player (renderer + collider)
+        sr.enabled = false;
+        soldierCollider.enabled = true;
+        animator.enabled = false;
+
+        // 2. Hiện hiệu ứng khói
+        if (spawnEffect != null)
+            spawnEffect.SetActive(true);
+
+        // 3. Chờ hiệu ứng chạy
+        yield return new WaitForSeconds(spawnEffectDuration);
+
+        // 4. Ẩn hiệu ứng khói
+        if (spawnEffect != null)
+            spawnEffect.SetActive(false);
+
+        // 5. Hiện player lại
+        sr.enabled = true;
+        soldierCollider.enabled = true;
+        animator.enabled = true;
+    }
+
 }

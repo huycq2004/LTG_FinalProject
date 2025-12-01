@@ -113,7 +113,7 @@ public class GameManager : MonoBehaviour
         {
             case 0:
                 Debug.Log("START GAME");
-                SceneManager.LoadScene("MAIN SCENE");
+                SceneManager.LoadScene("OPEN SCENE");
                 break;
 
             case 1:

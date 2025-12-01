@@ -4,8 +4,14 @@ public class CameraFollowController : MonoBehaviour
 {
     [Header("Follow Settings")]
     public Transform player;
-    public float smoothSpeed = 0.1f;
+    public float smoothSpeed = 5f;
     public Vector3 offset = new Vector3(0, 1, -10);
+
+    [Header("Look Ahead")]
+    public float lookAheadDistance = 3f;   // Camera nhìn trước
+    public float lookAheadSmooth = 3f;     // Mượt khi đổi hướng
+
+    private Vector3 currentLookAhead;
 
     [Header("Zoom Settings")]
     public float cameraSize = 5f;
@@ -18,16 +24,18 @@ public class CameraFollowController : MonoBehaviour
     public float maxY = 5f;
 
     private Camera mainCamera;
+    private SpriteRenderer playerRenderer;
 
     void Start()
     {
         mainCamera = GetComponent<Camera>();
-        
-        // Nếu chưa gán player, tự động tìm
+
         if (player == null)
             player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
-        // Đặt zoom camera
+        if (player != null)
+            playerRenderer = player.GetComponent<SpriteRenderer>();
+
         if (mainCamera != null)
             mainCamera.orthographicSize = cameraSize;
     }
@@ -36,45 +44,47 @@ public class CameraFollowController : MonoBehaviour
     {
         if (player == null) return;
 
-        // Tính toán vị trí camera mục tiêu
-        Vector3 desiredPosition = player.position + offset;
+        // ============================
+        // 1. LOOK AHEAD (Dead Cells)
+        // ============================
+        float lookAheadX = 0;
 
-        // Smoothing - camera di chuyển mượt mà
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+        if (playerRenderer != null)
+        {
+            lookAheadX = playerRenderer.flipX ? -lookAheadDistance : lookAheadDistance;
+        }
 
-        // Áp dụng giới hạn (nếu bật)
+        // Mượt khi đổi hướng
+        currentLookAhead = Vector3.Lerp(
+            currentLookAhead,
+            new Vector3(lookAheadX, 0, 0),
+            Time.deltaTime * lookAheadSmooth
+        );
+
+        // ============================
+        // 2. CAMERA TARGET POSITION
+        // ============================
+        Vector3 desiredPosition =
+            player.position + offset + currentLookAhead;
+
+        // ============================
+        // 3. APPLY SMOOTH FOLLOW
+        // ============================
+        Vector3 smoothedPosition = Vector3.Lerp(
+            transform.position,
+            desiredPosition,
+            Time.deltaTime * smoothSpeed
+        );
+
+        // ============================
+        // 4. MAP BOUNDS
+        // ============================
         if (useBounds)
         {
             smoothedPosition.x = Mathf.Clamp(smoothedPosition.x, minX, maxX);
             smoothedPosition.y = Mathf.Clamp(smoothedPosition.y, minY, maxY);
         }
 
-        // Cập nhật vị trí camera
         transform.position = smoothedPosition;
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        // Vẽ offset trên Scene view
-        if (player != null)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(player.position, player.position + offset);
-        }
-
-        // Vẽ bounds (nếu bật)
-        if (useBounds)
-        {
-            Gizmos.color = Color.red;
-            Vector3 topLeft = new Vector3(minX, maxY, 0);
-            Vector3 topRight = new Vector3(maxX, maxY, 0);
-            Vector3 bottomRight = new Vector3(maxX, minY, 0);
-            Vector3 bottomLeft = new Vector3(minX, minY, 0);
-
-            Gizmos.DrawLine(topLeft, topRight);
-            Gizmos.DrawLine(topRight, bottomRight);
-            Gizmos.DrawLine(bottomRight, bottomLeft);
-            Gizmos.DrawLine(bottomLeft, topLeft);
-        }
     }
 }
