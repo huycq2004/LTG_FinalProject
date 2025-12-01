@@ -25,7 +25,7 @@ public class RewardItem : MonoBehaviour
     public RewardType rewardType = RewardType.Gold;
 
     [Header("Gia Tri")]
-    [Tooltip("Gia tri tang them (so luong)")]
+    [Tooltip("Gia tri tang thêm (so luong)")]
     public int rewardValue = 1;
 
     [Header("Auto Destroy")]
@@ -106,15 +106,21 @@ public class RewardItem : MonoBehaviour
         {
             SoulManager.Instance.healAmount += rewardValue;
             Debug.Log($"Heal Amount tang len {SoulManager.Instance.healAmount}");
+            
+            // Luu vao PlayerPrefs
+            if (PlayerDataManager.Instance != null)
+            {
+                PlayerDataManager.Instance.SaveHealAmount(SoulManager.Instance.healAmount);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("SoulManager khong ton tai!");
         }
 
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlayPurchaseSound();
-        }
-        else
-        {
-            Debug.LogWarning("SoulManager khong ton tai!");
         }
     }
 
@@ -125,15 +131,21 @@ public class RewardItem : MonoBehaviour
         {
             soldierController.attackDamage += rewardValue;
             Debug.Log($"Attack Damage tang len {soldierController.attackDamage}");
+            
+            // Luu vao PlayerPrefs
+            if (PlayerDataManager.Instance != null)
+            {
+                PlayerDataManager.Instance.SaveAttackDamage(soldierController.attackDamage);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("SoldierController khong ton tai tren player!");
         }
 
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlayPurchaseSound();
-        }
-        else
-        {
-            Debug.LogWarning("SoldierController khong ton tai tren player!");
         }
     }
 
@@ -144,15 +156,21 @@ public class RewardItem : MonoBehaviour
         {
             soldierController.moveSpeed += rewardValue;
             Debug.Log($"Move Speed tang len {soldierController.moveSpeed}");
+            
+            // Luu vao PlayerPrefs
+            if (PlayerDataManager.Instance != null)
+            {
+                PlayerDataManager.Instance.SaveMoveSpeed(soldierController.moveSpeed);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("SoldierController khong ton tai tren player!");
         }
 
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlayPurchaseSound();
-        }
-        else
-        {
-            Debug.LogWarning("SoldierController khong ton tai tren player!");
         }
     }
 
@@ -161,15 +179,16 @@ public class RewardItem : MonoBehaviour
         if (CurrencyManager.Instance != null)
         {
             CurrencyManager.Instance.AddGold(rewardValue);
+            
+        }
+        else
+        {
+            Debug.LogWarning("CurrencyManager khong ton tai!");
         }
 
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlayPurchaseSound();
-        }
-        else
-        {
-            Debug.LogWarning("CurrencyManager khong ton tai!");
         }
     }
 
