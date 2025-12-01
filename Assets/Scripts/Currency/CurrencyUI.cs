@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class CurrencyUI : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class CurrencyUI : MonoBehaviour
     public string prefix = "Gold: ";  // Tien to truoc so vang
     public string suffix = "";        // Hau to sau so vang
 
-    void Start()
+    void OnEnable()
     {
         // Dang ky lang nghe su kien thay doi vang
         if (CurrencyManager.Instance != null)
@@ -22,8 +23,44 @@ public class CurrencyUI : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("CurrencyManager khong ton tai!");
+            // Neu CurrencyManager chua san sang, cho va thu lai
+            StartCoroutine(WaitForCurrencyManager());
         }
+    }
+
+    void OnDisable()
+    {
+        // Huy dang ky su kien khi disable
+        if (CurrencyManager.Instance != null)
+        {
+            CurrencyManager.Instance.OnGoldChanged -= UpdateGoldDisplay;
+        }
+    }
+
+    void Start()
+    {
+        // Dam bao hien thi dung khi khoi dong
+        if (CurrencyManager.Instance != null)
+        {
+            UpdateGoldDisplay(CurrencyManager.Instance.GetGold());
+        }
+    }
+
+    IEnumerator WaitForCurrencyManager()
+    {
+        // Doi CurrencyManager san sang
+        while (CurrencyManager.Instance == null)
+        {
+            yield return null;
+        }
+
+        // Dang ky event
+        CurrencyManager.Instance.OnGoldChanged += UpdateGoldDisplay;
+        
+        // Cap nhat UI
+        UpdateGoldDisplay(CurrencyManager.Instance.GetGold());
+        
+        Debug.Log("CurrencyUI: Da ket noi voi CurrencyManager");
     }
 
     void OnDestroy()
@@ -43,6 +80,7 @@ public class CurrencyUI : MonoBehaviour
         if (goldText != null)
         {
             goldText.text = displayText;
+            Debug.Log("Cap nhat UI Gold: " + goldAmount);
         }
     }
 }

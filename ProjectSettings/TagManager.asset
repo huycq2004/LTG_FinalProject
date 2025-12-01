@@ -88,5 +88,11 @@ TagManager:
   - name: Reward
     uniqueID: 1267438925
     locked: 0
+  - name: Gameover
+    uniqueID: 203887463
+    locked: 0
+  - name: Menu
+    uniqueID: 1643211835
+    locked: 0
   m_RenderingLayers:
   - Default

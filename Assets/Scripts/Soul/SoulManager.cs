@@ -99,25 +99,13 @@ public class SoulManager : MonoBehaviour
                 {
                     // Goi method Heal bang reflection
                     System.Reflection.MethodInfo healMethod = comp.GetType().GetMethod("Heal");
-                    System.Reflection.MethodInfo getCurrentHealth = comp.GetType().GetMethod("GetCurrentHealth");
-                    System.Reflection.MethodInfo getMaxHealth = comp.GetType().GetMethod("GetMaxHealth");
 
-                    if (healMethod != null && getCurrentHealth != null && getMaxHealth != null)
+                    if (healMethod != null)
                     {
-                        int currentHealth = (int)getCurrentHealth.Invoke(comp, null);
-                        int maxHealth = (int)getMaxHealth.Invoke(comp, null);
-
-                        // Kiem tra player co bi thuong khong
-                        if (currentHealth < maxHealth)
-                        {
-                            healMethod.Invoke(comp, new object[] { healAmount });
-                            UseSoul();
-                            Debug.Log("Hoi mau tu Soul!");
-                        }
-                        else
-                        {
-                            Debug.Log("Mau da day, khong the hoi!");
-                        }
+                        // Hoi mau khong can kiem tra mau da day chua
+                        healMethod.Invoke(comp, new object[] { healAmount });
+                        UseSoul();
+                        Debug.Log("Hoi mau tu Soul!");
                     }
                     break;
                 }

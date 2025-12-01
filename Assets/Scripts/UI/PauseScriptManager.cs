@@ -106,7 +106,7 @@ public class PauseMenu : MonoBehaviour
         {
             // Return to main menu
             Time.timeScale = 1;
-            SceneManager.LoadScene("MAIN MENU");
+            SceneManager.LoadScene("START");
         }
     }
 }

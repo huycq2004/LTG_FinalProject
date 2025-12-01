@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class CurrencyManager : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class CurrencyManager : MonoBehaviour
     public static CurrencyManager Instance { get; private set; }
 
     private int currentGold;
+    private bool isInitialized = false;  // Flag de biet da khoi tao chua
 
     // Event de thong bao khi vang thay doi
     public event Action<int> OnGoldChanged;
@@ -25,12 +27,34 @@ public class CurrencyManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        
+        // Dang ky su kien khi scene thay doi
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDestroy()
+    {
+        // Huy dang ky su kien
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     void Start()
     {
         // Doi PlayerDataManager san sang roi moi tai vang
         StartCoroutine(InitializeGold());
+    }
+
+    // Xu ly khi scene moi duoc load
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Chi thong bao UI cap nhat, KHONG tai lai vang
+        // Vi vang da duoc luu trong currentGold va PlayerPrefs
+        if (isInitialized)
+        {
+            // Chi trigger event de UI cap nhat
+            OnGoldChanged?.Invoke(currentGold);
+            Debug.Log("Scene loaded - cap nhat UI voi gold hien tai: " + currentGold);
+        }
     }
 
     // ====================
@@ -48,6 +72,9 @@ public class CurrencyManager : MonoBehaviour
 
         // Tai vang tu PlayerPrefs
         LoadGold();
+
+        // Danh mau da khoi tao
+        isInitialized = true;
 
         // Trigger event de cap nhat UI
         OnGoldChanged?.Invoke(currentGold);
@@ -89,14 +116,19 @@ public class CurrencyManager : MonoBehaviour
     {
         if (amount <= 0) return;
 
+        int oldGold = currentGold;
         currentGold += amount;
-        Debug.Log("Them vang: +" + amount + " | Tong: " + currentGold);
+        Debug.Log($"[CurrencyManager] Them vang: +{amount} | Truoc: {oldGold} | Sau: {currentGold}");
         
         // Luu vang vao PlayerPrefs
         SaveGold();
         
         // Thong bao vang da thay doi
-        OnGoldChanged?.Invoke(currentGold);
+        if (OnGoldChanged != null)
+        {
+            OnGoldChanged.Invoke(currentGold);
+            // Debug.Log($"[CurrencyManager] Da gui event OnGoldChanged voi gia tri: {currentGold}");
+        }
     }
 
     // Tru vang (tra ve true neu thanh cong)
