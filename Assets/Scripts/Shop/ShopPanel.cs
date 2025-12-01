@@ -129,6 +129,17 @@ public class ShopPanel : MonoBehaviour
     {
         if (IsValidItemDisplay(index, itemPriceTexts))
         {
+            // Kiem tra neu la item Bow da mua thi hien thi "DA MUA"
+            if (shopItems[index].itemType == ItemType.Bow)
+            {
+                bool hasBow = PlayerDataManager.Instance != null && PlayerDataManager.Instance.LoadHasBow();
+                if (hasBow)
+                {
+                    itemPriceTexts[index].text = "SOLD";
+                    return;
+                }
+            }
+
             itemPriceTexts[index].text = shopItems[index].price.ToString();
         }
     }
@@ -431,13 +442,22 @@ public class ShopPanel : MonoBehaviour
             UpdateSingleButtonState(i, currentGold);
         }
     }
-
     void UpdateSingleButtonState(int index, int currentGold)
     {
         if (itemButtons[index] != null && shopItems[index] != null)
         {
             bool canAfford = currentGold >= shopItems[index].price;
-            itemButtons[index].interactable = canAfford;
+
+            // Kiem tra neu la item Bow - chi enable neu chua mua
+            if (shopItems[index].itemType == ItemType.Bow)
+            {
+                bool hasBow = PlayerDataManager.Instance != null && PlayerDataManager.Instance.LoadHasBow();
+                itemButtons[index].interactable = canAfford && !hasBow;
+            }
+            else
+            {
+                itemButtons[index].interactable = canAfford;
+            }
         }
     }
 }
