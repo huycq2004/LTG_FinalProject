@@ -16,5 +16,6 @@ public enum ItemType
     MaxHealth,     // Tang mau toi da
     Damage,        // Tang sat thuong
     Speed,         // Tang toc do
-    Defense        // Tang phong thu
+    Defense,       // Tang phong thu
+    Bow            // Mo khoa khong nhan cung
 }

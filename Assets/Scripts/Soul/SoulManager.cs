@@ -90,25 +90,12 @@ public class SoulManager : MonoBehaviour
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
         {
-            // Tim component SoldierController
-            MonoBehaviour[] components = playerObj.GetComponents<MonoBehaviour>();
-            foreach (MonoBehaviour comp in components)
+            SoldierController soldier = playerObj.GetComponent<SoldierController>();
+            if (soldier != null)
             {
-                // Kiem tra neu la SoldierController
-                if (comp.GetType().Name == "SoldierController")
-                {
-                    // Goi method Heal bang reflection
-                    System.Reflection.MethodInfo healMethod = comp.GetType().GetMethod("Heal");
-
-                    if (healMethod != null)
-                    {
-                        // Hoi mau khong can kiem tra mau da day chua
-                        healMethod.Invoke(comp, new object[] { healAmount });
-                        UseSoul();
-                        Debug.Log("Hoi mau tu Soul!");
-                    }
-                    break;
-                }
+                soldier.Heal(healAmount);
+                UseSoul();
+                Debug.Log("Hoi mau tu Soul!");
             }
         }
     }

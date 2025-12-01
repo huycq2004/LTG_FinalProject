@@ -71,6 +71,7 @@ public class BossController : MonoBehaviour
     private int currentPhase = 1;
     private bool isAttacking;
     private bool isEnraged;
+    private bool isAggro;  // Trang thai khi bi tac cong - tu dong duoi theo
     private bool hasTriggeredBossMusic = false;
 
     // ====================
@@ -294,7 +295,10 @@ public class BossController : MonoBehaviour
         float distance = GetDistanceToPlayer();
         LookAtPlayer();
 
-        if (distance > detectionRange)
+        // Khi bi tac cong, khong can co khoang cach detect, tu dong duoi theo
+        float effectiveDetectionRange = isAggro ? float.MaxValue : detectionRange;
+
+        if (distance > effectiveDetectionRange)
         {
             StayIdle();
             return;
@@ -698,6 +702,7 @@ public class BossController : MonoBehaviour
     {
         if (IsDead()) return;
 
+        isAggro = true;  // Kich hoat che do khieu chien khi bi tac cong
         currentHealth -= damage;
         Debug.Log("Boss nhan " + damage + " sat thuong. Con " + currentHealth + " mau");
 

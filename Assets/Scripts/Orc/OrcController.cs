@@ -48,6 +48,7 @@ public class OrcController : MonoBehaviour
     private bool isHurting;
     private bool isDeath;
     private bool moveRight;
+    private bool isAggro;  // Trang thai khi bi tac cong - tu dong duoi theo
 
     // ====================
     // BO DEM THOI GIAN
@@ -172,6 +173,10 @@ public class OrcController : MonoBehaviour
 
     bool IsPlayerDetected()
     {
+        // Neu dang agro, chi huy song ma khong can kiem tra khoang cach
+        if (isAggro)
+            return true;
+
         return player != null && Vector2.Distance(player.transform.position, transform.position) <= patrolDistance + 3f;
     }
 
@@ -254,7 +259,16 @@ public class OrcController : MonoBehaviour
         }
         else
         {
-            Patrol();
+            // Neu khong nhin thay nguoi choi va khong agro, tuan tra
+            if (!isAggro)
+            {
+                Patrol();
+            }
+            else
+            {
+                // Agro nhung ko nhin thay, van duoi theo vi tri cuoi cung
+                ChasePlayer();
+            }
         }
     }
 
@@ -377,6 +391,7 @@ public class OrcController : MonoBehaviour
     {
         if (IsDead()) return;
 
+        isAggro = true;  // Kich hoat che do khieu chien khi bi tac cong
         ApplyDamage(damage);
         ShowHurtAnimation();
 

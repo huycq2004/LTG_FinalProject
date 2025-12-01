@@ -20,10 +20,11 @@ public class PlayerDataManager : MonoBehaviour
     private const string KEY_MOVE_SPEED = "PlayerMoveSpeed";
     private const string KEY_ATTACK_DAMAGE = "PlayerAttackDamage";
     private const string KEY_HEAL_AMOUNT = "PlayerHealAmount";
+    private const string KEY_HAS_BOW = "PlayerHasBow";
     private const string KEY_FIRST_TIME = "IsFirstTime";
 
     // ====================
-    // CAC GIA TRI MAC DINH - NGUON CHAN LY DUY NHAT
+    // CAC GIA tri MAC DINH - NGUON CHAN LY DUY NHAT
     // ====================
     // Cac gia tri nay se duoc dung de khoi tao lan dau choi
     // va khi reset game. Tat ca cac Manager khac se lay gia tri tu day.
@@ -103,6 +104,7 @@ public class PlayerDataManager : MonoBehaviour
         SaveMoveSpeed(defaultMoveSpeed);
         SaveAttackDamage(defaultAttackDamage);
         SaveHealAmount(defaultHealAmount);
+        SaveHasBow(false);  // Mac dinh chua co cung
         
         Debug.Log("Khoi tao du lieu nguoi choi mac dinh");
     }
@@ -204,6 +206,22 @@ public class PlayerDataManager : MonoBehaviour
     }
 
     // ====================
+    // LUU DU LIEU - CUNG (BOW)
+    // ====================
+
+    public void SaveHasBow(bool hasBow)
+    {
+        PlayerPrefs.SetInt(KEY_HAS_BOW, hasBow ? 1 : 0);
+        PlayerPrefs.Save();
+        Debug.Log("Da luu trang thai cung: " + (hasBow ? "Co" : "Khong"));
+    }
+
+    public bool LoadHasBow()
+    {
+        return PlayerPrefs.GetInt(KEY_HAS_BOW, 0) == 1;
+    }
+
+    // ====================
     // TAI TAT CA DU LIEU
     // ====================
 
@@ -244,6 +262,7 @@ public class PlayerDataManager : MonoBehaviour
         PlayerPrefs.DeleteKey(KEY_MOVE_SPEED);
         PlayerPrefs.DeleteKey(KEY_ATTACK_DAMAGE);
         PlayerPrefs.DeleteKey(KEY_HEAL_AMOUNT);
+        PlayerPrefs.DeleteKey(KEY_HAS_BOW);
         PlayerPrefs.Save();
         Debug.Log("Da xoa du lieu nguoi choi");
     }

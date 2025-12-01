@@ -4,7 +4,7 @@ using System.Collections;
 
 
 /// Soldier Controller - Dieu khien nhan vat nguoi choi
-/// Gom co: Di chuyen, Nhay, Dash (iframe), Tan cong, Nhan sat thuong
+/// Gom co: Di chuyen, Nhay, Dash (iframe), Tan cong, Bac cung, Nhan sat thuong
 
 public class SoldierController : MonoBehaviour
 {
@@ -28,6 +28,12 @@ public class SoldierController : MonoBehaviour
     public float attackDuration = 0.3f;
     public float attackRadius = 0.5f;
     public int attackDamage = 1;  // Gia tri mac dinh, se duoc override boi PlayerDataManager
+
+    [Header("Bac Cung")]
+    public GameObject arrowPrefab;
+    public Transform arrowSpawnPoint;
+    public float bowDuration = 0.3f;
+    public float bowCooldown = 0.5f;
 
     [Header("Mau")]
     public int maxHealth = 5;  // Gia tri mac dinh, se duoc override boi PlayerDataManager
@@ -72,6 +78,8 @@ public class SoldierController : MonoBehaviour
     private bool isHurting;
     private bool isInvincible;
     private bool isDeath;
+    private bool isBow;
+    private bool hasBow;  // Trang thai: co khong nhan cung
 
     // ====================
     // BO DEM THOI GIAN
@@ -83,6 +91,8 @@ public class SoldierController : MonoBehaviour
     private float knockbackTimer;
     private float hurtTimer;
     private float invincibilityTimer;
+    private float bowDurationTimer;
+    private float bowCooldownTimer;
 
     // ====================
     // BIEN KHAC
@@ -136,11 +146,15 @@ public class SoldierController : MonoBehaviour
             moveSpeed = data.moveSpeed;
             attackDamage = data.attackDamage;
             
-            Debug.Log($"Tai du lieu nguoi choi: HP={currentHealth}/{maxHealth}, Speed={moveSpeed}, ATK={attackDamage}");
+            // Tai trang thai cung
+            hasBow = PlayerDataManager.Instance.LoadHasBow();
+            
+            Debug.Log($"Tai du lieu nguoi choi: HP={currentHealth}/{maxHealth}, Speed={moveSpeed}, ATK={attackDamage}, HasBow={hasBow}");
         }
         else
         {
             currentHealth = maxHealth;
+            hasBow = false;
             Debug.Log("PlayerDataManager chua san sang, dung gia tri mac dinh");
         }
     }
@@ -240,6 +254,10 @@ public class SoldierController : MonoBehaviour
     {
         return !isAttacking;
     }
+    bool CanBow()
+    {
+        return hasBow && !isBow && bowCooldownTimer <= 0 && !isAttacking;
+    }
 
     // ====================
     // XU LY INPUT
@@ -257,6 +275,7 @@ public class SoldierController : MonoBehaviour
         HandleJumpInput();
         HandleAttackInput();
         HandleDashInput();
+        HandleBowInput();
     }
 
     void ReadMovementInput()
@@ -287,6 +306,14 @@ public class SoldierController : MonoBehaviour
         if (Keyboard.current.hKey.wasPressedThisFrame && CanDash())
         {
             StartDash();
+        }
+    }
+
+    void HandleBowInput()
+    {
+        if (Keyboard.current.rKey.wasPressedThisFrame && CanBow())
+        {
+            StartBow();
         }
     }
 
@@ -337,6 +364,47 @@ public class SoldierController : MonoBehaviour
     {
         isDashing = false;
         rb.gravityScale = 3;
+    }
+
+    // ====================
+    // HANH DONG: BAC CUNG
+    // ====================
+
+    void StartBow()
+    {
+        isBow = true;
+        bowDurationTimer = bowDuration;
+        bowCooldownTimer = bowCooldown;
+        animator.SetBool("isBow", true);
+    }
+
+    void FireArrow()
+    {
+        if (arrowPrefab == null)
+        {
+            Debug.LogWarning("Arrow prefab chua duoc gan!");
+            return;
+        }
+
+        // Xac dinh vi tri sinh mui ten
+        Transform spawnPos = arrowSpawnPoint != null ? arrowSpawnPoint : transform;
+        
+        // Tao mui ten
+        GameObject arrowObj = Instantiate(arrowPrefab, spawnPos.position, Quaternion.identity);
+        
+        // Thiep lap huong ban
+        float arrowDirection = sr.flipX ? -1 : 1;
+        Vector2 shootDirection = new Vector2(arrowDirection, 0);
+        
+        // Thiep lap component Arrow
+        PlayerArrow arrow = arrowObj.GetComponent<PlayerArrow>();
+        if (arrow != null)
+        {
+            int arrowDamage = Mathf.Max(1, attackDamage / 2); // Dame = 1/2 ATK, toi thieu 1
+            arrow.Initialize(shootDirection, arrowDamage);
+        }
+
+        Debug.Log("Ban mui ten voi dame: " + (attackDamage / 2));
     }
 
     // ====================
@@ -419,6 +487,7 @@ public class SoldierController : MonoBehaviour
         UpdateHurtTimer();
         UpdateInvincibilityTimer();
         UpdateAttackTimer();
+        UpdateBowTimer();
     }
 
     void UpdateDashTimer()
@@ -487,6 +556,29 @@ public class SoldierController : MonoBehaviour
                 animator.SetBool("isAttacking", false);
             }
         }
+    }
+
+    void UpdateBowTimer()
+    {
+        if (isBow)
+        {
+            bowDurationTimer -= Time.deltaTime;
+            
+            // Ban mui ten o cuoi thoi gian bowDuration
+            if (bowDurationTimer <= 0 && bowDurationTimer + Time.deltaTime > 0)
+            {
+                FireArrow();
+            }
+            
+            if (bowDurationTimer <= 0)
+            {
+                isBow = false;
+                animator.SetBool("isBow", false);
+            }
+        }
+
+        if (bowCooldownTimer > 0)
+            bowCooldownTimer -= Time.deltaTime;
     }
 
     void UpdateIsGrounded()
@@ -692,6 +784,25 @@ public class SoldierController : MonoBehaviour
         {
             CurrencyManager.Instance.AddGold(amount);
         }
+    }
+
+    public void UnlockBow()
+    {
+        if (hasBow)
+        {
+            Debug.Log("Ban da co cung roi!");
+            return;
+        }
+
+        hasBow = true;
+        
+        // Luu trang thai cung
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.SaveHasBow(true);
+        }
+        
+        Debug.Log("Da mo khoa cung!");
     }
 
     // ====================

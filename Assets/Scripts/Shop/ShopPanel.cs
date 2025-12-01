@@ -376,6 +376,10 @@ public class ShopPanel : MonoBehaviour
                 ApplySpeedEffect(player, item);
                 break;
 
+            case ItemType.Bow:
+                ApplyBowEffect(player, item);
+                break;
+
             default:
                 Debug.LogWarning("Loai item chua duoc xu ly: " + item.itemType);
                 break;
@@ -404,6 +408,12 @@ public class ShopPanel : MonoBehaviour
     {
         player.SendMessage("IncreaseSpeed", (float)item.value, SendMessageOptions.DontRequireReceiver);
         Debug.Log("Tang toc do: +" + item.value);
+    }
+
+    void ApplyBowEffect(GameObject player, ShopItem item)
+    {
+        player.SendMessage("UnlockBow", SendMessageOptions.DontRequireReceiver);
+        Debug.Log("Da mo khoa cung!");
     }
 
     // ====================
