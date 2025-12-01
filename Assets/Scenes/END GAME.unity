@@ -636,8 +636,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Create by:  Chau Van Man\n\t         Chau Quang Huy\n\t         Dinh Le
-    Thai Duong"
+  m_text: "Created by:  Chau Van Man\n\t            Chau Quang Huy\n\t           
+    Dinh Le Thai Duong"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 59be8d02452763242a7e6593da4bb2ff, type: 2}
   m_sharedMaterial: {fileID: -8029115467651604191, guid: 59be8d02452763242a7e6593da4bb2ff, type: 2}
@@ -1087,7 +1087,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!95 &911645652
 Animator:
   serializedVersion: 7
@@ -77854,7 +77854,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!95 &1900711499
 Animator:
   serializedVersion: 7
@@ -78208,6 +78208,8 @@ PlayableDirector:
     value: {fileID: 221031146}
   - key: {fileID: 5559065905316213053, guid: 37a79ccb7de6e464084fb93f3fb6a622, type: 2}
     value: {fileID: 1900711499}
+  - key: {fileID: 7688941326580627126, guid: 37a79ccb7de6e464084fb93f3fb6a622, type: 2}
+    value: {fileID: 1735109646}
   m_ExposedReferences:
     m_References: []
 --- !u!4 &2077456067
