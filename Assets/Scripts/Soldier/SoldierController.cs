@@ -697,7 +697,6 @@ public class SoldierController : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-
     void ResetPlayerDataOnDeath()
     {
         if (PlayerDataManager.Instance != null)

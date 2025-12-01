@@ -93,8 +93,9 @@ public class GameOver : MonoBehaviour
     {
         if (currentIndex == 0)
         {
-            // Return to main menu
+            // Play Again - Reset du lieu va quay lai game
             Time.timeScale = 1;
+            ResetGameData();
             SceneManager.LoadScene("MAIN SCENE");
         }
         else if (currentIndex == 1)
@@ -104,4 +105,25 @@ public class GameOver : MonoBehaviour
             SceneManager.LoadScene("START");
         }
     }
+
+    // Reset du lieu nguoi choi khi choi lai
+    void ResetGameData()
+    {
+        // Reset vang ve default
+        if (CurrencyManager.Instance != null)
+        {
+            CurrencyManager.Instance.ResetGold();
+            Debug.Log("Da reset vang ve default!");
+        }
+
+        // Reset player data ve default (mau, suc manh, toc do, cung)
+        if (PlayerDataManager.Instance != null)
+        {
+            PlayerDataManager.Instance.ResetAllData();
+            Debug.Log("Da reset player data ve default!");
+        }
+
+        Debug.Log("Da reset tat ca du lieu khi choi lai!");
+    }
+
 }
