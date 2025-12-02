@@ -1,254 +1,259 @@
-🎮 LTG Final Project – 2D Action Game
+# 🎮 LTG Final Project - 2D Action Game
 
-A fast-paced 2D action game with dynamic combat, shop upgrades, enemy AI, boss fights, and persistent progression.
+A Unity-based 2D action game featuring dynamic combat, shop system, enemy AI, and persistent game progression.
 
-<p align="center"> <img src="https://img.shields.io/badge/Engine-Unity-000000?style=for-the-badge&logo=unity" /> <img src="https://img.shields.io/badge/C#-4.7.1-239120?style=for-the-badge&logo=csharp" /> <img src="https://img.shields.io/badge/Platform-PC-0066FF?style=for-the-badge" /> <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge" /> </p>
-📌 Table of Contents
+---
 
-Overview
+## 📌 Table of Contents
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Game Mechanics](#game-mechanics)
+- [Installation & Setup](#installation--setup)
+- [Project Structure](#project-structure)
+- [Key Systems](#key-systems)
+- [Controls](#controls)
+- [Contributing](#contributing)
+- [License](#license)
+- [Support](#support)
+- [Credits](#credits)
 
-Features
+---
 
-Game Mechanics
+## 🧩Project Overview
 
-Installation
+**LTG Final Project** is a 2D action game developed in Unity that combines fast-paced combat mechanics with strategic progression systems. Players engage in battles with enemies, collect rewards, upgrade their character through a shop system, and face challenging boss encounters.
 
-Project Structure
+- **Engine:** Unity
+- **Target Platform:** PC
+- **.NET Framework:** 4.7.1
+- **Repository:** [GitHub - LTG_FinalProject](https://github.com/huycq2004/LTG_FinalProject)
 
-Key Systems
+---
 
-Controls
+## ✨Features
 
-Contributing
+### Core Gameplay
+- ⚔️ **Combat System** - Attack, jump, dash, and bow mechanics
+- 🦘 **Player Movement** - Smooth movement with double jump and dash (invincibility frames)
+- 🎯 **Ranged Combat** - Arrow-based bow attack system
+- ❤️ **Health System** - Dynamic health bar with damage calculation
 
-License
+### Game Systems
+- 🛒 **Shop Panel** - Buy upgrades for health, damage, speed, and bow
+- 💰 **Currency System** - Gold collection and management
+- 🎁 **Reward System** - Item drops and progression rewards
+- 💾 **Data Persistence** - PlayerPrefs-based save system
+- 🤖 **Enemy AI** - Golem and Boss enemy types with unique behaviors
 
-Support
+### UI & UX
+- 🏠 **Main Menu** - Start game and exit options
+- ⏸️ **Pause Menu** - Continue or return to main menu
+- 💀 **Game Over Screen** - Replay or quit options
+- 📊 **Stats Display** - Real-time stat tracking and upgrades
 
-Credits
+---
 
-🧩 Overview
+## ⚙️ Game Mechanics
 
-LTG Final Project is a Unity-based 2D action game where players battle enemies, collect rewards, upgrade stats, unlock weapons, and challenge bosses.
+### Player Controls
+| Action | Control |
+|--------|---------|
+| Move Left/Right | A/D or Arrow Keys |
+| Jump | W or Up Arrow |
+| Double Jump | W/Up Arrow (in air) |
+| Dash (with iframe) | Space |
+| Attack | Left Click |
+| Bow Attack | Right Click |
+| Shop | E |
+| Pause | ESC |
 
-🎯 Game Highlights
+### Combat System
+- **Melee Attack:** Close-range damage with attack duration and radius
+- **Bow Attack:** Ranged attack with arrows that deal damage on impact
+- **Dash:** Quick movement with invincibility frames (iframe) and cooldown
 
-Smooth combat & movement
+### Progression
+- **Upgrades Available:**
+  - ?? Max Health
+  - ? Attack Damage
+  - ?? Movement Speed
+  - ?? Bow Acquisition
 
-Shop & stat upgrades
+### Enemy Types
+- **Golem:** Standard enemy with patrol and attack AI
+- **Boss:** Advanced enemy with complex attack patterns
 
-Gold & reward drops
+---
 
-Advanced enemy AI
+## 🛠️ Installation & Setup
 
-Persistent save system
+### Prerequisites
+- Unity 2021.3 LTS or higher
+- .NET Framework 4.7.1
+- Git (optional, for cloning the repository)
 
-🔗 Repository:
-👉 https://github.com/huycq2004/LTG_FinalProject
+### Clone the Repository
 
-✨ Features
-🗡️ Core Gameplay
-
-⚔️ Combat: melee, dash (iframe), bow shooting
-
-🦘 Movement: double jump, smooth horizontal movement
-
-🎯 Ranged Combat: arrow projectiles
-
-❤️ Health System: dynamic UI and damage handling
-
-🏪 Game Systems
-
-🛒 Shop System: upgrade stats & buy bow
-
-💰 Currency System: gold tracking
-
-🎁 Reward System: item drops
-
-💾 PlayerPrefs Save: persistent progress
-
-🤖 Enemy AI: Golem & Boss behavior
-
-🖥️ UI & UX
-
-🏠 Main Menu
-
-⏸️ Pause Menu
-
-💀 Game Over Screen
-
-📊 Real-time stat display
-
-⚙️ Game Mechanics
-🎮 Player Controls
-Action	Input
-Move	A/D or Arrow Keys
-Jump	W / Up Arrow
-Double Jump	W / Up (in air)
-Dash (iframe)	Space
-Melee Attack	Left Click
-Bow Attack	Right Click
-Shop	E
-Pause	ESC
-🛠️ Installation
-📦 Prerequisites
-
-Unity 2021.3 LTS or newer
-
-.NET Framework 4.7.1
-
-Git (optional)
-
-📥 Clone Project
 git clone https://github.com/huycq2004/LTG_FinalProject.git
 cd LTG_FinalProject
 
-▶️ Open in Unity
 
-Open Unity Hub
+### Setup in Unity
+1. Open Unity Hub
+2. Click "Add" ? Select the project folder
+3. Open the project with compatible Unity version
+4. Allow Unity to import all assets
+5. Open the **START** scene to begin
+6. Press Play to test the game
 
-Click Add Project
+### First Run
+- Game initializes default player stats on first play
+- PlayerPrefs stores all progression data locally
+- Data persists across game sessions
 
-Select the folder
+---
 
-Open with Unity 2021.3+
+## 📁 Project Structure
 
-Load the START.unity scene
 
-Press Play
-
-📁 Project Structure
 Assets/
-├── Scripts/
-│   ├── Data/
-│   │   └── PlayerDataManager.cs
-│   ├── UI/
-│   │   ├── GameManager.cs
-│   │   ├── GameOverManager.cs
-│   │   └── HealthBarUI.cs
-│   ├── Soldier/
-│   │   ├── SoldierController.cs
-│   │   └── PlayerArrow.cs
-│   ├── Shop/
-│   │   └── ShopPanel.cs
-│   ├── Reward/
-│   │   └── RewardItem.cs
-│   ├── Enemy/
-│   │   ├── EnemyController.cs
-│   │   ├── GolemController.cs
-│   │   └── BossController.cs
-│   └── Manager/
-│       └── CurrencyManager.cs
-├── Scenes/
-│   ├── START.unity
-│   └── MAIN SCENE.unity
-├── Prefabs/
-│   ├── Player
-│   ├── Enemies
-│   ├── Arrows
-│   └── UI
-└── Assets/
-    ├── Sprites
-    ├── Audio
-    └── Fonts
-
-🧠 Key Systems
-💾 Data Persistence (PlayerPrefs)
-
-PlayerDataManager.cs stores:
-
-Gold
-
-Max Health
-
-Current Health
-
-Movement Speed
-
-Attack Damage
-
-Bow Ownership
-
-First-Time Flag
-
-🛒 Shop System
-
-ShopPanel.cs:
-
-Purchase validation
-
-Stat upgrades
-
-UI animations
-
-⚔️ Combat System
-
-SoldierController.cs:
-
-Movement, jump, dash
-
-Attack (melee + ranged)
-
-Damage handling
-
-👹 Enemy AI
-
-GolemController.cs – patrol, detect, attack
-
-BossController.cs – advanced patterns
-
-🎮 Controls Reference
-
-🧭 Navigation
-
-Move: A / D
-
-Jump: W
-
-Dash: Space
-
-Attack: Left Click
-
-Bow: Right Click
-
-Pause: ESC
-
-Shop: E
-
-🤝 Contributing
-🪵 Branch Structure
-
-main — Stable version
-
-dev/complete — Active development
-
-feature/<name> — New feature
-
-📌 Commit Format
-[type] Short description
-
-Optional details...
+??? Scripts/
+?   ??? Data/
+?   ?   ??? PlayerDataManager.cs          # Player stats & save system
+?   ??? UI/
+?   ?   ??? GameManager.cs                # Main menu controller
+?   ?   ??? GameOverManager.cs            # Game over screen
+?   ?   ??? HealthBarUI.cs                # Health bar display
+?   ??? Soldier/
+?   ?   ??? SoldierController.cs          # Player character control
+?   ?   ??? PlayerArrow.cs                # Arrow projectile
+?   ??? Shop/
+?   ?   ??? ShopPanel.cs                  # Shop UI & purchase logic
+?   ??? Reward/
+?   ?   ??? RewardItem.cs                 # Reward item system
+?   ??? Enemy/
+?   ?   ??? EnemyController.cs            # Base enemy class
+?   ?   ??? GolemController.cs            # Golem enemy AI
+?   ?   ??? BossController.cs             # Boss enemy AI
+?   ??? Manager/
+?   ?   ??? CurrencyManager.cs            # Gold management
+?   ??? Utilities/
+?       ??? [Helper scripts]
+??? Scenes/
+?   ??? START.unity                       # Main menu scene
+?   ??? MAIN SCENE.unity                  # Gameplay scene
+??? Prefabs/
+?   ??? Player/
+?   ??? Enemies/
+?   ??? Arrows/
+?   ??? UI/
+??? Assets/
+    ??? Sprites/
+    ??? Fonts/
+    ??? Audio/
 
 
-Types: feat, fix, refactor, docs, style, test, chore
+---
 
-📜 License
+## ?? Key Systems
 
-This project is part of an educational assignment.
-Check the LICENSE file for details.
+### Data Persistence System
+**PlayerDataManager.cs** handles all player data using Unity's PlayerPrefs:
 
-💬 Support
+// Saves and loads:
+- Player Gold
+- Current Health & Max Health
+- Movement Speed
+- Attack Damage
+- Heal Amount
+- Bow Ownership
+- First Time Flag
 
-Check GitHub Issues
 
-Create a new issue with steps & screenshots
+### Shop System
+**ShopPanel.cs** manages:
+- Item display and purchasing
+- Gold validation
+- Stat upgrades
+- UI animations (fade in/out)
 
-🎨 Credits
+### Combat System
+**SoldierController.cs** provides:
+- Movement and jumping
+- Melee and ranged attacks
+- Dash mechanic with iframe
+- Health management
+- Spawn effects
 
-Development: GROUP 2
+### Enemy AI
+- **Golem:** Patrol-based movement with attack detection
+- **Boss:** Advanced pattern-based attacks and behavior
 
-Assets: Kenney, Unity Asset Store
+---
 
-Engine: Unity
+## ?? Controls Reference
 
-<p align="center"> <b>Made with ❤️ using Unity</b><br><br> <img src="https://media.tenor.com/2roX3uxz_7sAAAAC/cat-computer.gif" width="200"> </p>
+### Keyboard Input
+- **Movement:** WASD or Arrow Keys
+- **Jump:** W / Up Arrow
+- **Dash:** Spacebar
+- **Attack:** Left Click
+- **Bow:** Right Click
+- **Shop:** E
+- **Pause:** ESC
+- **Menu Navigation:** Up/Down Arrow or W/S
+- **Select:** Enter
+
+---
+
+## ?? Contributing
+
+### Branching Strategy
+- `main` - Stable release branch
+- `dev/complete` - Development branch
+- Feature branches: `feature/feature-name`
+
+### Code Standards
+- Follow existing code style and naming conventions
+- Comment code in English and Vietnamese
+- Keep methods focused and single-responsibility
+- Test changes in the Unity Editor before committing
+
+### Commit Message Format
+
+[Type] Brief description
+
+Detailed explanation (optional)
+
+Type: feat, fix, refactor, docs, style, test, chore
+
+
+---
+
+## ?? License
+
+This project is part of an educational assignment. Please check the LICENSE file for specific usage rights.
+
+---
+
+## ?? Support
+
+For issues, questions, or suggestions:
+1. Check existing GitHub Issues
+2. Create a new Issue with detailed description
+3. Include reproduction steps if reporting a bug
+
+---
+
+## ?? Credits
+
+- **Development:** Game programming team
+- **Assets:** Kenney Asset Pack, Unity Standard Assets
+- **Framework:** Unity Engine, Input System
+
+---
+
+**Happy Gaming! ??**
+
+
+This revised README.md maintains the original structure while integrating the new content seamlessly, ensuring clarity and coherence throughout the document.
