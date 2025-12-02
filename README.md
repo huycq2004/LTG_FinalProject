@@ -58,14 +58,14 @@ A Unity-based 2D action game featuring dynamic combat, shop system, enemy AI, an
 ### Player Controls
 | Action | Control |
 |--------|---------|
-| Move Left/Right | A/D or Arrow Keys |
-| Jump | W or Up Arrow |
-| Double Jump | W/Up Arrow (in air) |
-| Dash (with iframe) | Space |
-| Attack | Left Click |
-| Bow Attack | Right Click |
-| Shop | E |
-| Pause | ESC |
+| Move Left/Right | A/D |
+| Jump | Space |
+| Double Jump | Space in air |
+| Dash (with iframe) | H |
+| Attack | F |
+| Bow Attack | R |
+| Shop | Space |
+| Pause | Backspace |
 
 ### Combat System
 - **Melee Attack:** Close-range damage with attack duration and radius
@@ -119,41 +119,39 @@ cd LTG_FinalProject
 Assets/
 ├── Scripts/
 │   ├── Data/
-│   │   └── PlayerDataManager.cs          // Player stats & save system
+│   │   └── PlayerDataManager.cs        # Player stats & save system
 │   ├── UI/
-│   │   ├── GameManager.cs                // Main menu controller
-│   │   ├── GameOverManager.cs            // Game over screen
-│   │   └── HealthBarUI.cs                // Health bar display
+│   │   ├── GameManager.cs              # Main menu controller
+│   │   ├── GameOverManager.cs          # Game over screen
+│   │   └── HealthBarUI.cs              # Health bar display
 │   ├── Soldier/
-│   │   ├── SoldierController.cs          // Player character control
-│   │   └── PlayerArrow.cs                // Arrow projectile
+│   │   ├── SoldierController.cs        # Player character control
+│   │   └── PlayerArrow.cs              # Arrow projectile
 │   ├── Shop/
-│   │   └── ShopPanel.cs                  // Shop UI & purchase logic
+│   │   └── ShopPanel.cs                # Shop UI & purchase logic
 │   ├── Reward/
-│   │   └── RewardItem.cs                 // Reward item system
+│   │   └── RewardItem.cs               # Reward item system
 │   ├── Enemy/
-│   │   ├── EnemyController.cs            // Base enemy class
-│   │   ├── GolemController.cs            // Golem enemy AI
-│   │   └── BossController.cs             // Boss enemy AI
+│   │   ├── EnemyController.cs          # Base enemy class
+│   │   ├── GolemController.cs          # Golem enemy AI
+│   │   └── BossController.cs           # Boss enemy AI
 │   ├── Manager/
-│   │   └── CurrencyManager.cs            // Gold management
+│   │   └── CurrencyManager.cs          # Gold management
 │   └── Utilities/
-│       └── ...                           // Helper scripts
-│
+│       └── ...                         # Helper scripts
 ├── Scenes/
-│   ├── START.unity                       // Main menu scene
-│   └── MAIN SCENE.unity                  // Gameplay scene
-│
+│   ├── START.unity                     # Main menu scene
+│   └── MAIN_SCENE.unity                # Gameplay scene
 ├── Prefabs/
 │   ├── Player/
 │   ├── Enemies/
 │   ├── Arrows/
 │   └── UI/
-│
 └── Assets/
     ├── Sprites/
     ├── Fonts/
     └── Audio/
+
 
 ---
 
@@ -242,3 +240,4 @@ For issues, questions, or suggestions:
 ---
 
 **Happy Gaming! ??**
+
