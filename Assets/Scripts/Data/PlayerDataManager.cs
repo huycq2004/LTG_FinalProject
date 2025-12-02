@@ -248,8 +248,6 @@ public class PlayerDataManager : MonoBehaviour
 
     public void ResetAllData()
     {
-        PlayerPrefs.DeleteAll();
-        PlayerPrefs.Save();
         InitializeDefaultValues();
         Debug.Log("Da reset tat ca du lieu ve gia tri mac dinh");
     }
