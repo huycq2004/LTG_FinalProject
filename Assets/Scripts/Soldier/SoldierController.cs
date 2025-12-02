@@ -222,7 +222,7 @@ public class SoldierController : MonoBehaviour
 
     bool CanJump()
     {
-        Debug.Log("Player nhan nut nhay!, jumpCount: " + jumpCount + " isGrounded: " + isGrounded);
+        // Debug.Log("Player nhan nut nhay!, jumpCount: " + jumpCount + " isGrounded: " + isGrounded);
 
         //player on ground
         if (isGrounded == true)
