@@ -15,21 +15,16 @@ MonoBehaviour:
   npcName: Masked Man
   npcPortrait: {fileID: -6367560908665664636, guid: 3750f45c844123341b9a777a96cb1eca, type: 3}
   dialogueLines:
-  - "Ch\xE0o ch\xE0ng trai!"
-  - "T\xF4i ch\u01B0a g\u1EB7p c\u1EADu bao gi\u1EDD,.... C\xF3 v\u1EBB nh\u01B0
-    c\u1EADu l\xE0 ng\u01B0\u1EDDi t\u1EEB n\u01A1i xa \u0111\u1EBFn."
-  - "T\xF4i ngh\u0129 l\xE0 c\u1EADu s\u1EBD c\u1EA7n trang b\u1ECB m\u1ED9t v\xE0i
-    ki\u1EBFn th\u1EE9c tr\u01B0\u1EDBc khi phi\xEAu l\u01B0u \u1EDF n\u01A1i nguy
-    hi\u1EC3m ngo\xE0i kia."
-  - "Nh\u1EA5n ph\xEDm A - D \u0111\u1EC3 di chuy\u1EC3n tr\xE1i ph\u1EA3i."
-  - "Nh\u1EA5n ph\xEDm F \u0111\u1EC3 t\u1EA5n c\xF4ng c\xE1c sinh v\u1EADt nguy
-    hi\u1EC3m."
-  - "Nh\u1EA5n ph\xEDm G \u0111\u1EC3 nh\u1EA3y l\xEAn."
-  - "Nh\u1EA5n ph\xEDm H tr\xE1nh n\xE9 kh\u1ECFi c\xE1c \u0111\xF2n t\u1EA5n c\xF4ng
-    c\u1EE7a k\u1EBB th\xF9."
-  - "T\xF4i ngh\u0129 \u0111\xF3 l\xE0 t\u1EA5t c\u1EA3 nh\u1EEFng g\xEC b\u1EA1n
-    c\u1EA7n bi\u1EBFt,..."
-  - "Th\u01B0\u1EE3ng l\u1ED9 b\xECnh an!"
+  - Hello young boy!
+  - I have never met you before,.... You seem to be from far away.
+  - I think you'll need to arm yourself with some knowledge before venturing out
+    into the dangerous world.
+  - Press A - D keys to move left and right.
+  - Press F key to attack dangerous creatures.
+  - Press G to jump.
+  - Press H key to dodge enemy attacks.
+  - I think that's all you need to know,...
+  - Godspeed!
   autoProgessLines: 010101010101010100
   autoProgressDelay: 1.5
   typingSpeed: 0.05

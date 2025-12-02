@@ -1,13 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using TMPro;
 
 public class NPC : MonoBehaviour, IInteractable
 {
     public NPCDialogue dialogueData;
     public GameObject dialoguePanel;
-    public TMP_Text dialogueText, nameText;
+    public Text dialogueText, nameText;
     public Image portraitImage;
 
     private int dialogueIndex;
@@ -20,13 +19,13 @@ public class NPC : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if(dialogueData == null)
+        if (dialogueData == null)
         {
             Debug.LogWarning("NPC: No dialogue data assigned!");
             return;
         }
 
-        if(isDialogueActive)
+        if (isDialogueActive)
         {
             NextLine();
         }
@@ -54,14 +53,14 @@ public class NPC : MonoBehaviour, IInteractable
         isTyping = true;
         dialogueText.text = "";
 
-        foreach(char letter in dialogueData.dialogueLines[dialogueIndex])
+        foreach (char letter in dialogueData.dialogueLines[dialogueIndex])
         {
             dialogueText.text += letter;
             yield return new WaitForSeconds(dialogueData.typingSpeed);
         }
         isTyping = false;
 
-        if(dialogueData.autoProgessLines[dialogueIndex] && dialogueData.autoProgessLines.Count > dialogueIndex)
+        if (dialogueData.autoProgessLines[dialogueIndex] && dialogueData.autoProgessLines.Count > dialogueIndex)
         {
             yield return new WaitForSeconds(dialogueData.autoProgressDelay);
             NextLine();
@@ -70,11 +69,12 @@ public class NPC : MonoBehaviour, IInteractable
 
     void NextLine()
     {
-        if(isTyping) {
+        if (isTyping)
+        {
             StopAllCoroutines();
             dialogueText.text = dialogueData.dialogueLines[dialogueIndex];
             isTyping = false;
-            
+
         }
         else if (++dialogueIndex < dialogueData.dialogueLines.Count)
         {
@@ -90,7 +90,15 @@ public class NPC : MonoBehaviour, IInteractable
     {
         StopAllCoroutines();
         isDialogueActive = false;
-        dialogueText.SetText("");
-        dialoguePanel.SetActive(false);
+
+        if (dialogueText != null)
+        {
+            dialogueText.text = "";
+        }
+
+        if (dialoguePanel != null)
+        {
+            dialoguePanel.SetActive(false);
+        }
     }
 }
