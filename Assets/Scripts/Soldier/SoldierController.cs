@@ -690,9 +690,6 @@ public class SoldierController : MonoBehaviour
             animator.SetBool("isDeath", true);
         }
 
-        // Reset tat ca du lieu ve mac dinh khi chet
-        ResetPlayerDataOnDeath();
-
         StartCoroutine(ShowGameOverPanel());
     }
 
@@ -707,15 +704,6 @@ public class SoldierController : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    void ResetPlayerDataOnDeath()
-    {
-        if (PlayerDataManager.Instance != null)
-        {
-            // Reset tat ca du lieu ve gia tri mac dinh
-            PlayerDataManager.Instance.ResetAllData();
-            Debug.Log("Da reset tat ca du lieu nguoi choi ve mac dinh");
-        }
-    }
 
     // ====================
     // HOI PHUC & NANG CAP

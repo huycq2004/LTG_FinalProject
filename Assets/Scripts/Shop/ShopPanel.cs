@@ -246,7 +246,7 @@ public class ShopPanel : MonoBehaviour
     string BuildStatsText()
     {
         return string.Format(
-            "Máu: {0}/{1}\nSát Thương: {2}\nTốc Độ: {3:F1}",
+            "HP: {0}/{1}\nATK: {2}\nSPEED: {3:F1}",
             soldierController.GetCurrentHealth(),
             soldierController.GetMaxHealth(),
             soldierController.GetAttackDamage(),
