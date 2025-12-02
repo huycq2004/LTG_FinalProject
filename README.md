@@ -117,45 +117,47 @@ cd LTG_FinalProject
 
 
 Assets/
-??? Scripts/
-?   ??? Data/
-?   ?   ??? PlayerDataManager.cs          # Player stats & save system
-?   ??? UI/
-?   ?   ??? GameManager.cs                # Main menu controller
-?   ?   ??? GameOverManager.cs            # Game over screen
-?   ?   ??? HealthBarUI.cs                # Health bar display
-?   ??? Soldier/
-?   ?   ??? SoldierController.cs          # Player character control
-?   ?   ??? PlayerArrow.cs                # Arrow projectile
-?   ??? Shop/
-?   ?   ??? ShopPanel.cs                  # Shop UI & purchase logic
-?   ??? Reward/
-?   ?   ??? RewardItem.cs                 # Reward item system
-?   ??? Enemy/
-?   ?   ??? EnemyController.cs            # Base enemy class
-?   ?   ??? GolemController.cs            # Golem enemy AI
-?   ?   ??? BossController.cs             # Boss enemy AI
-?   ??? Manager/
-?   ?   ??? CurrencyManager.cs            # Gold management
-?   ??? Utilities/
-?       ??? [Helper scripts]
-??? Scenes/
-?   ??? START.unity                       # Main menu scene
-?   ??? MAIN SCENE.unity                  # Gameplay scene
-??? Prefabs/
-?   ??? Player/
-?   ??? Enemies/
-?   ??? Arrows/
-?   ??? UI/
-??? Assets/
-    ??? Sprites/
-    ??? Fonts/
-    ??? Audio/
-
+├── Scripts/
+│   ├── Data/
+│   │   └── PlayerDataManager.cs          // Player stats & save system
+│   ├── UI/
+│   │   ├── GameManager.cs                // Main menu controller
+│   │   ├── GameOverManager.cs            // Game over screen
+│   │   └── HealthBarUI.cs                // Health bar display
+│   ├── Soldier/
+│   │   ├── SoldierController.cs          // Player character control
+│   │   └── PlayerArrow.cs                // Arrow projectile
+│   ├── Shop/
+│   │   └── ShopPanel.cs                  // Shop UI & purchase logic
+│   ├── Reward/
+│   │   └── RewardItem.cs                 // Reward item system
+│   ├── Enemy/
+│   │   ├── EnemyController.cs            // Base enemy class
+│   │   ├── GolemController.cs            // Golem enemy AI
+│   │   └── BossController.cs             // Boss enemy AI
+│   ├── Manager/
+│   │   └── CurrencyManager.cs            // Gold management
+│   └── Utilities/
+│       └── ...                           // Helper scripts
+│
+├── Scenes/
+│   ├── START.unity                       // Main menu scene
+│   └── MAIN SCENE.unity                  // Gameplay scene
+│
+├── Prefabs/
+│   ├── Player/
+│   ├── Enemies/
+│   ├── Arrows/
+│   └── UI/
+│
+└── Assets/
+    ├── Sprites/
+    ├── Fonts/
+    └── Audio/
 
 ---
 
-## ?? Key Systems
+## 🧠 Key Systems
 
 ### Data Persistence System
 **PlayerDataManager.cs** handles all player data using Unity's PlayerPrefs:
@@ -191,7 +193,7 @@ Assets/
 
 ---
 
-## ?? Controls Reference
+## 🎮 Controls Reference
 
 ### Keyboard Input
 - **Movement:** WASD or Arrow Keys
@@ -206,12 +208,7 @@ Assets/
 
 ---
 
-## ?? Contributing
-
-### Branching Strategy
-- `main` - Stable release branch
-- `dev/complete` - Development branch
-- Feature branches: `feature/feature-name`
+## 🤝 Contributing
 
 ### Code Standards
 - Follow existing code style and naming conventions
@@ -219,24 +216,15 @@ Assets/
 - Keep methods focused and single-responsibility
 - Test changes in the Unity Editor before committing
 
-### Commit Message Format
-
-[Type] Brief description
-
-Detailed explanation (optional)
-
-Type: feat, fix, refactor, docs, style, test, chore
-
-
 ---
 
-## ?? License
+## 📜 License
 
 This project is part of an educational assignment. Please check the LICENSE file for specific usage rights.
 
 ---
 
-## ?? Support
+## 💬 Support
 
 For issues, questions, or suggestions:
 1. Check existing GitHub Issues
@@ -245,15 +233,12 @@ For issues, questions, or suggestions:
 
 ---
 
-## ?? Credits
+## 🎨 Credits
 
-- **Development:** Game programming team
+- **Development:** GROUP 2
 - **Assets:** Kenney Asset Pack, Unity Standard Assets
 - **Framework:** Unity Engine, Input System
 
 ---
 
 **Happy Gaming! ??**
-
-
-This revised README.md maintains the original structure while integrating the new content seamlessly, ensuring clarity and coherence throughout the document.
