@@ -11,6 +11,12 @@
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 *.log
+.DS_Store
+Assets/.DS_Store
+Assets/Animtaions/.DS_Store
+Assets/Assets/.DS_Store
+Assets/Prefabs/.DS_Store
+Assets/Scripts/.DS_Store
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
