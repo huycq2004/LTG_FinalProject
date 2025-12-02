@@ -115,7 +115,7 @@ cd LTG_FinalProject
 
 ## 📁 Project Structure
 
-
+```
 Assets/
 ├── Scripts/
 │   ├── Data/
@@ -151,7 +151,7 @@ Assets/
     ├── Sprites/
     ├── Fonts/
     └── Audio/
-
+```
 
 ---
 
@@ -240,4 +240,5 @@ For issues, questions, or suggestions:
 ---
 
 **Happy Gaming! ??**
+
 
