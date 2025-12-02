@@ -160,7 +160,7 @@ Assets/
 ### Data Persistence System
 **PlayerDataManager.cs** handles all player data using Unity's PlayerPrefs:
 
-// Saves and loads:
+## Saves and loads:
 - Player Gold
 - Current Health & Max Health
 - Movement Speed
@@ -240,5 +240,6 @@ For issues, questions, or suggestions:
 ---
 
 **Happy Gaming! ??**
+
 
 
